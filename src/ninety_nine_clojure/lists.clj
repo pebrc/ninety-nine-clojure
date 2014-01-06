@@ -60,8 +60,8 @@
   "P07 (**) Flatten a nested list structure."
   ([xs] (flatten-recur [] xs))
   ([acc xs]
-     (if
-      (not (seq? xs)) (conj acc xs)
+     (if-not
+      (seq? xs) (conj acc xs)
       (if (empty? xs)
         acc
         (-> (flatten-recur acc (first xs))
@@ -70,13 +70,12 @@
 (defn flatten-destructured
   "P07 solution I saw on cchandler's github repo"
   [x & tail]
-  (print x)
   (concat (if (seq? x)
             (apply flatten-destructured x)
             [x])
-          (if tail
-            (apply flatten-destructured tail)
-            nil)))
+          (if (nil? tail)
+            nil
+            (apply flatten-destructured tail))))
 
 (defn flatten-reduce
   "P07 solution I saw on rodnaph's github repo "
@@ -85,3 +84,75 @@
              (concat %1 (flatten-reduce %2))
              (concat %1 (list %2)))
           '() xs))
+
+(defn compress
+  "P08 (**) Eliminate consecutive duplicates of list elements."
+  [xs]
+  (reduce #(if-not (= (last %1) %2)
+             (conj %1 %2)
+             %1)
+          []
+          xs))
+(defn pack
+  "P09 (**) Pack consecutive duplicates of list elements into sublists."
+  [xs]
+  (partition-by identity xs))
+
+
+(defn encode
+  "P10 (*) Run-length encoding of a list.
+Use the result of problem P09 to implement the so-called run-length encoding data compression method. Consecutive duplicates of elements are encoded as tuples (N, E) where N is the number of duplicates of the element E."
+  [xs]
+  (map #(list (count  %) (first  %)) (pack xs)))
+
+
+(defn encode-modified
+  "P11 (*) Modified run-length encoding.
+Modify the result of problem P10 in such a way that if an element has no duplicates it is simply copied into the result list. Only elements with duplicates are transferred as (N, E) terms."
+  [xs]
+  (map #(let [num-elems (count %)
+              a-elem (first %)]
+          (if (= 1 num-elems)
+            a-elem
+            (list num-elems a-elem))) (pack xs)))
+
+(defn decode
+  "P12 (**) Decode a run-length encoded list.
+Given a run-length code list generated as specified in problem P10, construct its uncompressed version."
+  [xs]
+  (flatten (map #(repeat (first %) (second %)) xs)))
+
+(defn encode-direct
+  "P13 (**) Run-length encoding of a list (direct solution).
+Implement the so-called run-length encoding data compression method directly. I.e. don't use other methods you've written (like P09's pack); do all the work directly."
+  [xs]
+  (map #(list (count %) (first %)) (partition-by identity xs)))
+
+(defn duplicate
+  "P14 (*) Duplicate the elements of a list."
+  [xs]
+  (reduce #(conj %1 %2 %2 ) [] xs ))
+
+(defn duplicate-n
+  "P15 (**) Duplicate the elements of a list a given number of times."
+  [n xs]
+  (reduce #(concat %1 (repeat n %2 )) '() xs))
+
+(defn drop-every
+  "P16 (**) Drop every Nth element from a list."
+  [n coll]
+  (let [drop-lazily (fn drop-lazily [n coll cnt]
+                      (lazy-seq
+                       (if (seq coll)
+                         (if (=  (mod cnt n) 0)
+                           (drop-lazily n (rest coll) (inc cnt))
+                           (cons (first coll) (drop-lazily n (rest coll) (inc cnt))))
+                         [])))]
+    (drop-lazily n coll 1))
+  )
+
+(defn drop-every-x [lst n]
+    "P16 solution from rodnaph"
+    (->> (partition-all n lst)
+         (map (partial take (dec n)))
+         (flatten)))
