@@ -143,13 +143,17 @@ Implement the so-called run-length encoding data compression method directly. I.
   [n coll]
   (let [drop-lazily (fn drop-lazily [n coll cnt]
                       (lazy-seq
-                       (if (seq coll)
-                         (if (=  (mod cnt n) 0)
-                           (drop-lazily n (rest coll) (inc cnt))
-                           (cons (first coll) (drop-lazily n (rest coll) (inc cnt))))
-                         [])))]
+                       (cond
+                        (not (seq coll)) []
+                        (= (mod cnt n) 0) (drop-lazily n (rest coll) (inc cnt))
+                        :else (cons (first coll) (drop-lazily n (rest coll) (inc cnt)))) ))]
     (drop-lazily n coll 1))
   )
+
+(defn drop-every-2
+  "P16 (**) Drop every Nth element from a list."
+  [n coll]
+  (keep-indexed #(if-not (= (mod (inc %1) n) 0) %2) coll))
 
 (defn drop-every-x [lst n]
     "P16 solution from rodnaph"

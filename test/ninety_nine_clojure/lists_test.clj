@@ -106,4 +106,9 @@
 
 (deftest p13-drop-every-nth
   (is (= '( a  b  d  e  g  h  j  k) (drop-every 3  '(a b c d e f g h i j k)
+                                                ))))
+
+(deftest p13-drop-every-nth-2
+  (is (= '( a  b  d  e  g  h  j  k) (drop-every-2 3  '(a b c d e f g h i j k)
                                           ))))
+
