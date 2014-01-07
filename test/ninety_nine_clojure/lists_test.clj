@@ -92,23 +92,26 @@
 (deftest p10-encode-modified
   (is (= '((4 a)  b  (2 c)  (2 a)  d  (4 e)) (encode-modified '( a a a a b c c a a d e e e e)))))
 
-(deftest p11-decode
+(deftest p12-decode
   (is (= '( a a a a b c c a a d e e e e) (decode '((4 a) (1 b) (2 c) (2 a) (1 d) (4 e))) )))
 
-(deftest p11-encode-direct
+(deftest p13-encode-direct
   (is (= '((4 a) (1 b) (2 c) (2 a) (1 d) (4 e)) (encode-direct '( a a a a b c c a a d e e e e) ))))
 
-(deftest p12-duplicate
+(deftest p14-duplicate
   (is (= '(a a b b c c c c d d) (duplicate '(a b c c d)))))
 
-(deftest p12-duplicate-n
+(deftest p15-duplicate-n
   (is (= '(a a a b b b c c c c c c d d d) (duplicate-n 3 '(a b c c d)))))
 
-(deftest p13-drop-every-nth
+(deftest p16-drop-every-nth
   (is (= '( a  b  d  e  g  h  j  k) (drop-every 3  '(a b c d e f g h i j k)
                                                 ))))
 
-(deftest p13-drop-every-nth-2
+(deftest p16-drop-every-nth-2
   (is (= '( a  b  d  e  g  h  j  k) (drop-every-2 3  '(a b c d e f g h i j k)
-                                          ))))
+                                                  ))))
+
+(deftest p17-split
+  (is (= ['(a b c) '(d e f g h i j k)]) (split 3 '(a b c d e f g h i j k))))
 

@@ -160,3 +160,12 @@ Implement the so-called run-length encoding data compression method directly. I.
     (->> (partition-all n lst)
          (map (partial take (dec n)))
          (flatten)))
+
+(defn split [n coll]
+  "P17 (*) Split a list into two parts."
+  (let [split-acc (fn split-acc [n coll acc]
+                    (if (and (seq coll) (> n 0))                      
+                      (recur (dec n) (rest coll) (conj acc (first coll)))
+                      [acc coll]))]
+    (split-acc n coll [])))
+
