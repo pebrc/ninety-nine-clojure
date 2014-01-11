@@ -113,3 +113,5 @@
 (deftest p17-split
   (is (= ['(a b c) '(d e f g h i j k)]) (split 3 '(a b c d e f g h i j k))))
 
+(deftest p18-slice
+  (is (= '(d e f g) (slice 3 7 '(a b c d e f g h i j k)))))

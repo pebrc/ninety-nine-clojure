@@ -170,3 +170,6 @@ Implement the so-called run-length encoding data compression method directly. I.
     (split-acc n coll [])))
 
 
+(defn slice [s e xs]
+  "P18 (**) Extract a slice from a list."
+  (take (- e s) (drop s xs)))
