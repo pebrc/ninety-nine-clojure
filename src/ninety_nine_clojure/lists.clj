@@ -8,7 +8,7 @@
     (recur (next input))
     (first input)))
 
-(defn my-butlast [xs]
+(defn penultimate [xs]
   {:doc  "P02 (*) Find the last but one element of a list."
    :pre [(seq? xs)]}
   (loop [ret (first xs) xs xs]
@@ -168,4 +168,5 @@ Implement the so-called run-length encoding data compression method directly. I.
                       (recur (dec n) (rest coll) (conj acc (first coll)))
                       [acc coll]))]
     (split-acc n coll [])))
+
 

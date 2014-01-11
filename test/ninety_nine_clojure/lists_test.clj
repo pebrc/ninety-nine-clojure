@@ -6,20 +6,18 @@
   (let [in (list 1 2 3)]
     (is (= 3 (last-builtin in)))))
 
-(deftest p01-test
-  (let [in (list 1 2 3)]
-    (is (= 3 (my-last in)))))
+(deftest p01-last
+  (is (= 3 (my-last (list 1 2 3)))))
 
-(deftest p02-test
-  (let [in (list 1 2 3)]
-    (is (= 2 (my-butlast in)))))
+(deftest p02-penultimate
+  (is (= 2 (penultimate (list 1 2 3)))))
 
 (deftest p02-empty-input
   (let [in ()]
-    (is (= nil (my-butlast in)))))
+    (is (= nil (penultimate in)))))
 
 (deftest p02-non-seq
-  (is (thrown? AssertionError (my-butlast :not-a-seq))))
+  (is (thrown? AssertionError (penultimate :not-a-seq))))
 
 (deftest p03-builtin-test
   (let [in (list 1 2 3 4)]
