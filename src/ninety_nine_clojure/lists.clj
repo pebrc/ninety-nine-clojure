@@ -172,3 +172,9 @@ Implement the so-called run-length encoding data compression method directly. I.
 (defn slice [s e xs]
   "P18 (**) Extract a slice from a list."
   (take (- e s) (drop s xs)))
+
+(defn rotate [n xs]
+  "P19 (**) Rotate a list N places to the left."
+  (let [ at (if (< n 0) (+ (count xs) n) n) 
+        [newtail newhead] (split at xs)]
+    (concat newhead newtail)))
