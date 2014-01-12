@@ -20,11 +20,10 @@
 
 (defn kth [n xs]  
   {:doc "P03 (*) Find the Kth element of a list." 
-   :pre [(seq? xs) (< 0 n)]}
-  (loop [n n xs xs]
-    (if (= 0 n)
-      (first xs)
-      (recur (- n 1) (next xs))))
+   :pre [(seq? xs)]}
+  (if (= 0 n)
+    (first xs)
+    (recur (- n 1) (next xs)))
   )
 
 (defn count-builtin [xs] (count xs))

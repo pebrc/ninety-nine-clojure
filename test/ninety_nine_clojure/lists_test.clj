@@ -23,15 +23,14 @@
   (let [in (list 1 2 3 4)]
     (is (= 3 (kth-builtin 2 in)))))
 
-(deftest p03-test
-  (let [data (list 1 2 3 4)]
-    (is (= 3 (kth 2 data)))))
+(deftest p03-kth
+  (is (= 3 (kth 2 (list 1 2 3 4)))))
 
 (deftest p03-empty-input
-  (is (= nil (kth 2 '()))))
+  (is (thrown? AssertionError (kth 2 '()))))
 
 (deftest p03-index-out-of-bounds
-  (is (= nil (kth 10 (list 1)))))
+  (is (thrown? AssertionError (kth 10 (list 1)))))
 
 (deftest p04-builtin-test
   (is (= 3 (count-builtin (list 1 2 3)))))
