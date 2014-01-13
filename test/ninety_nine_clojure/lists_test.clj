@@ -118,3 +118,6 @@
 (deftest p19-rotate
   (is (= '(d e f g h i j k a b c) (rotate 3 '(a b c d e f g h i j k))))
   (is (= '(j k a b c d e f g h i) (rotate -2 '(a b c d e f g h i j k)))))
+
+(deftest p20-remove-at
+  (is (= '((a c d) b) (remove-at 1 '(a b c d)))))

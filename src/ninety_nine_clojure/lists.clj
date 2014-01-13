@@ -178,3 +178,8 @@ Implement the so-called run-length encoding data compression method directly. I.
   (let [ at (if (< n 0) (+ (count xs) n) n) 
         [newtail newhead] (split at xs)]
     (concat newhead newtail)))
+
+(defn remove-at [k xs]
+  "P20 (*) Remove the Kth element from a list."
+  (let [[head tail] (split k xs)]
+    (list (concat head (rest tail)) (first tail))))
