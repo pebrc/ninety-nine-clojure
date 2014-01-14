@@ -121,3 +121,6 @@
 
 (deftest p20-remove-at
   (is (= '((a c d) b) (remove-at 1 '(a b c d)))))
+
+(deftest p21-insert-at
+  (is (= '(1 new 2 3 4) (insert-at 'new 1 '(1 2 3 4)))))

@@ -183,3 +183,8 @@ Implement the so-called run-length encoding data compression method directly. I.
   "P20 (*) Remove the Kth element from a list."
   (let [[head tail] (split k xs)]
     (list (concat head (rest tail)) (first tail))))
+
+(defn insert-at [elem pos xs]
+  "P21 (*) Insert an element at a given position into a list."
+  (let [[head tail] (split pos xs)]
+    (concat head (cons elem tail))))
