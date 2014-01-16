@@ -188,3 +188,10 @@ Implement the so-called run-length encoding data compression method directly. I.
   "P21 (*) Insert an element at a given position into a list."
   (let [[head tail] (split pos xs)]
     (concat head (cons elem tail))))
+
+(defn my-range [start end]
+  "P22 (*) Create a list containing all integers within a given range."
+  (lazy-seq (cons start (if (= start end)
+                          '()
+                          (my-range (inc start) end))) )
+  )

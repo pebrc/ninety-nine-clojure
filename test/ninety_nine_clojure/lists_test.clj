@@ -124,3 +124,6 @@
 
 (deftest p21-insert-at
   (is (= '(1 new 2 3 4) (insert-at 'new 1 '(1 2 3 4)))))
+
+(deftest p22-range
+  (is (= '(4 5 6 7 8 9) (my-range 4 9))))
