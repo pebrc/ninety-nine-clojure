@@ -92,6 +92,7 @@
              %1)
           []
           xs))
+
 (defn pack
   "P09 (**) Pack consecutive duplicates of list elements into sublists."
   [xs]
@@ -195,3 +196,15 @@ Implement the so-called run-length encoding data compression method directly. I.
                           '()
                           (my-range (inc start) end))) )
   )
+
+(defn random-select [n from]
+  "P23 (**) Extract a given number of randomly selected elements from a list."
+  (loop [n n from from res []]
+    (if (= 0 n)
+      res
+      (let [[rem elem] (remove-at (rand (dec (count from))) from)]           
+           (recur (dec n) rem  (cons elem res))))))
+
+(defn random-select-idiomatic [n from]
+  "P23 as seen @rodnaph 's"
+  (take n (shuffle from)))

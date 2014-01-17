@@ -78,7 +78,7 @@
   (is (= '(1 1 2 3 5 8) (flatten-reduce (list (list 1 1) 2 (list 3 (list 5 8)))))))
 
 (deftest p08-compress
-  (is (= [\a \b \c \a \d \e]  (compress  [\a \a \a \a \b \c \c \a \a \d \e \e \e \e]))))
+  (is (= '[a b c a d e]  (compress  '[a a a a b c c a a d e e e e]))))
 
 (deftest p09-pack
   (is (= '( ( a a a a) ( b) ( c c) ( a a) ( d) ( e e e e)) (pack  '( a a a a b c c a a d e e e e)))))
@@ -127,3 +127,6 @@
 
 (deftest p22-range
   (is (= '(4 5 6 7 8 9) (my-range 4 9))))
+
+(deftest p23-random-select
+  (is (= 3 (count (random-select 3 '(1 2 3 4 5 6))) )))
