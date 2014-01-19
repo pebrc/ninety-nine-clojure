@@ -208,3 +208,7 @@ Implement the so-called run-length encoding data compression method directly. I.
 (defn random-select-idiomatic [n from]
   "P23 as seen @rodnaph 's"
   (take n (shuffle from)))
+
+(defn lotto [n m]
+  "P24 (*) Lotto: Draw N different random numbers from the set 1..M"
+  (random-select n (range 1 (inc m ()))))

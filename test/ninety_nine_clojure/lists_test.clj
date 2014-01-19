@@ -130,3 +130,10 @@
 
 (deftest p23-random-select
   (is (= 3 (count (random-select 3 '(1 2 3 4 5 6))) )))
+
+(deftest p24-lotto
+  (let [draw (lotto 6 49)]
+    (is (= 6 (count draw)))
+    (is (> 49 (apply max draw))))
+  
+  )
