@@ -110,11 +110,9 @@ Use the result of problem P09 to implement the so-called run-length encoding dat
   "P11 (*) Modified run-length encoding.
 Modify the result of problem P10 in such a way that if an element has no duplicates it is simply copied into the result list. Only elements with duplicates are transferred as (N, E) terms."
   [xs]
-  (map #(let [num-elems (count %)
-              a-elem (first %)]
-          (if (= 1 num-elems)
-            a-elem
-            (list num-elems a-elem))) (pack xs)))
+  (map #(if (= 1 (first %))
+          (second %)
+          %) (encode xs)))
 
 (defn decode
   "P12 (**) Decode a run-length encoded list.
@@ -211,4 +209,4 @@ Implement the so-called run-length encoding data compression method directly. I.
 
 (defn lotto [n m]
   "P24 (*) Lotto: Draw N different random numbers from the set 1..M"
-  (random-select n (range 1 (inc m ()))))
+  (random-select n (range 1 (inc m))))
