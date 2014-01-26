@@ -1,4 +1,5 @@
-(ns ninety-nine-clojure.lists)
+(ns ninety-nine-clojure.lists
+  (:require [clojure.core.match :refer (match)]))
 
 (defn last-builtin ([input] (last input)))
 
@@ -210,3 +211,62 @@ Implement the so-called run-length encoding data compression method directly. I.
 (defn lotto [n m]
   "P24 (*) Lotto: Draw N different random numbers from the set 1..M"
   (random-select n (range 1 (inc m))))
+
+(defn random-permute [xs]
+  "P25 (*) Generate a random permutation of the elements of a list."
+  (random-select (count xs) xs))
+
+(defn node-join [l r]
+  (match [l r]
+         [[:leaf _] [:leaf _]]           [:node 2 l r]
+         [[:node c & _] [:leaf _]]       [:node (inc c) l r]
+         [[:leaf _] [:node c & _]]       [:node (inc c) l r]
+         [[:node cl & _] [:node cr & _]] [:node (+ cl cr) l r]))
+
+(defn pair-leaves
+  ([l] l)
+  ([l1 l2 & r]
+     (if r       
+       (recur (node-join l1 l2) (apply pair-leaves r) nil)
+       (node-join l1 l2))))
+
+(defn build-tree [vals]
+  "Build a complete, binary search tree, as described in
+  http://okmij.org/ftp/Haskell/perfect-shuffle.txt"
+  (apply pair-leaves (map #(conj [:leaf ] %) vals)))
+
+(defn extract-tree [n tree]
+  "Extracts the n-th element from the tree and returns that element
+  paired with a tree with the element deleted. See:
+  http://okmij.org/ftp/Haskell/perfect-shuffle.txt"
+  (match [n tree]
+         [0 [:node _ [:leaf e] r]]                                           [e r]
+         [n [:node 2  ([:leaf _] :as l) [:leaf r]]]                          [r l]
+         [n [:node c ([:leaf _] :as l) r]]
+           (let [[res newr] (extract-tree (dec n) r)] [res  [:node (dec c) l newr]])
+         [n [:node (n1 :guard (partial  >= (inc n))) l [:leaf e]]]            [e l]
+         [n [:node c ([:node (c1 :guard (partial < n)) _ _] :as l) r]]
+           (let [[res newl] (extract-tree n l)] [res [:node (dec c) newl r]])
+         [n [:node c ([:node c1 _ _ ] :as l) r]]
+           (let [[res newr] (extract-tree (- n c1) r)] [res [:node (dec c) l newr]] ) 
+         ))
+
+(defn perfect-functional-shuffle [bst rnds]
+  "Given a non-empty, complete binary search tree for a sequence of
+  elements and a corresponding sequence of numbers such that each
+  number is an independent sample from a uniform random distribution,
+  computes the corresponding permutation of sequence of elements. See
+  also: http://okmij.org/ftp/Haskell/perfect-shuffle.txt"
+  (loop [bst bst rnds rnds acc []]
+    (cond
+     (= :leaf (first bst)) (conj acc (second bst))
+     :otherwise   (let [[el sub-bst] (extract-tree (first rnds) bst)]
+        (recur sub-bst (next rnds) (conj acc el))))))
+
+(defn random-permute-functional [xs]
+  "P25 (*) Generate a random permutation of the elements of a list. An
+  attempt at a Clojure implemention of the algorithm/Haskell
+  implementation described here:
+  http://okmij.org/ftp/Haskell/perfect-shuffle.txt"
+  (let [num-elems (count xs)]
+    (perfect-functional-shuffle (build-tree xs) (repeatedly num-elems #(rand-int num-elems)))))

@@ -134,6 +134,23 @@
 (deftest p24-lotto
   (let [draw (lotto 6 49)]
     (is (= 6 (count draw)))
-    (is (> 49 (apply max draw))))
-  
+    (is (> 49 (apply max draw))))  
   )
+
+(deftest p25-random-permute
+  (let [original (range 20)
+        permutation (random-permute original)]
+    (is (= (count original) (count permutation)))
+    (is (not= original permutation))))
+
+
+(deftest p25-functional-shuffle
+  (is '(a b c d e) (perfect-functional-shuffle (build-tree '(a b c d e)) [0 0 0 0]))
+  (is '(e d c b a) (perfect-functional-shuffle (build-tree '(a b c d e)) [4 3 2 1]))
+  (is '(c b e a d) (perfect-functional-shuffle (build-tree '(a b c d e)) [2 1 2 0])))
+
+(deftest p25-random-permute-functional
+  (let [original (range 20)
+        permutation (random-permute-functional original)]
+    (is (= (count original) (count permutation)))
+    (is (not= original permutation))))
