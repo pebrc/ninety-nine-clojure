@@ -270,3 +270,14 @@ Implement the so-called run-length encoding data compression method directly. I.
   http://okmij.org/ftp/Haskell/perfect-shuffle.txt"
   (let [num-elems (count xs)]
     (perfect-functional-shuffle (build-tree xs) (repeatedly num-elems #(rand-int num-elems)))))
+
+
+
+(defn combinations [k n]
+  "P26 (**) Generate the combinations of K distinct objects chosen
+  from the N elements of a list."
+  (cond (= k 0) '(nil)
+        (empty? n) nil
+        :else (concat (map #(conj % (first n))
+                           (comb (dec k) (rest n)))
+                      (comb k (rest n)))))

@@ -154,3 +154,7 @@
         permutation (random-permute-functional original)]
     (is (= (count original) (count permutation)))
     (is (not= original permutation))))
+
+(deftest p26-combinations
+  (is (= '((0 1) (0 2) (1 2)) (combinations 2 (range 3))))
+  (is (= 220 (count (combinations 3 (range 12))))))
