@@ -279,5 +279,5 @@ Implement the so-called run-length encoding data compression method directly. I.
   (cond (= k 0) '(nil)
         (empty? n) nil
         :else (concat (map #(conj % (first n))
-                           (comb (dec k) (rest n)))
-                      (comb k (rest n)))))
+                           (combinations (dec k) (rest n)))
+                      (combinations k (rest n)))))
