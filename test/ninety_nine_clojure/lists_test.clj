@@ -134,7 +134,7 @@
 (deftest p24-lotto
   (let [draw (lotto 6 49)]
     (is (= 6 (count draw)))
-    (is (> 49 (apply max draw))))  
+    (is (>= 49 (apply max draw))))  
   )
 
 (deftest p25-random-permute
@@ -155,6 +155,19 @@
     (is (= (count original) (count permutation)))
     (is (not= original permutation))))
 
+(defn ! [n]
+  (apply * (range 1 (inc n))))
+
 (deftest p26-combinations
   (is (= '((0 1) (0 2) (1 2)) (combinations 2 (range 3))))
   (is (= 220 (count (combinations 3 (range 12))))))
+
+(deftest p27-multinomial-coefficients
+  "Number of permutations is n!/(k1!*k2!...km!)"
+  (let [people '("Aldo" "Beat" "Carla" "David" "Evi" "Flip" "Gary" "Hugo" "Ida")
+        num-permutations (/ (! 9) (* (! 4) (! 3) (! 2)))
+        group3-res (group3 people)
+        group-gen-res (group [4 3 2] people)]
+    (is (= num-permutations (count group3-res)))
+    (is (= num-permutations (count group-gen-res)))
+    (is (= group3-res group-gen-res))))

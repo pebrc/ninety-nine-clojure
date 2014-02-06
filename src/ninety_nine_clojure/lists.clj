@@ -1,5 +1,6 @@
 (ns ninety-nine-clojure.lists
-  (:require [clojure.core.match :refer (match)]))
+  (:require [clojure.core.match :refer (match)])
+  (:use [clojure.set :only [difference]]) )
 
 (defn last-builtin ([input] (last input)))
 
@@ -281,3 +282,25 @@ Implement the so-called run-length encoding data compression method directly. I.
         :else (concat (map #(conj % (first n))
                            (combinations (dec k) (rest n)))
                       (combinations k (rest n)))))
+
+
+(defn group3 [coll]
+  "P27 (**) Group the elements of a set into disjoint subsets. a) In
+  how many ways can a group of 9 people work in 3 disjoint subgroups
+  of 2, 3 and 4 persons?"
+  (for [fours (combinations 4 coll)
+        threes (combinations 3 (difference (set coll) (set fours)))
+        twos (combinations 2 (difference (set  coll) (set fours) (set threes)))]
+    [fours threes twos]))
+
+
+(defn group [groups coll]
+  "P27 (**) Group the elements of a set into disjoint subsets.
+  Generalize the above predicate in a way that we can specify a list
+  of group sizes and the predicate will return a list of groups."
+  (if (empty? groups)
+    '(nil)
+    (mapcat (fn [g]
+           (map  #(conj % g)
+                 (group (rest groups) (difference (set coll) (set g)))))
+         (combinations (first groups) coll))))
