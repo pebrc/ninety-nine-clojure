@@ -171,3 +171,11 @@
     (is (= num-permutations (count group3-res)))
     (is (= num-permutations (count group-gen-res)))
     (is (= group3-res group-gen-res))))
+
+(deftest p28-sublist-sort
+  (is (= '((o) (d e) (d e) (m n) (a b c)  (f g h)  (i j k l))
+         (lsort '((a b c) (d e) (f g h) (d e) (i j k l) (m n) (o))))))
+
+(deftest p28-sublist-freq-sort
+  (is (= '((i j k l) (o) (a b c) (f g h) (d e) (d e) (m n))
+         (lsort-freq '((a b c) (d e) (f g h) (d e) (i j k l) (m n) (o))))))
