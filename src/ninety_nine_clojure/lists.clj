@@ -270,7 +270,7 @@ Implement the so-called run-length encoding data compression method directly. I.
   implementation described here:
   http://okmij.org/ftp/Haskell/perfect-shuffle.txt"
   (let [num-elems (count xs)]
-    (perfect-functional-shuffle (build-tree xs) (repeatedly num-elems #(rand-int num-elems)))))
+    (perfect-functional-shuffle (build-tree xs)  (map  #(rand-int (- num-elems %)) (range num-elems)))))
 
 
 
