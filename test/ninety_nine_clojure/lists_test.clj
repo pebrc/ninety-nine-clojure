@@ -145,9 +145,9 @@
 
 
 (deftest p25-functional-shuffle
-  (is '(a b c d e) (perfect-functional-shuffle (build-tree '(a b c d e)) [0 0 0 0]))
-  (is '(e d c b a) (perfect-functional-shuffle (build-tree '(a b c d e)) [4 3 2 1]))
-  (is '(c b e a d) (perfect-functional-shuffle (build-tree '(a b c d e)) [2 1 2 0])))
+  (is (= '(a b c d e) (perfect-functional-shuffle (build-tree '(a b c d e)) [0 0 0 0])))
+  (is (= '(e d c b a) (perfect-functional-shuffle (build-tree '(a b c d e)) [4 3 2 1])))
+  (is (= '(c b e a d) (perfect-functional-shuffle (build-tree '(a b c d e)) [2 1 2 0]))))
 
 (deftest p25-random-permute-functional
   (let [original (range 20)
@@ -171,6 +171,11 @@
     (is (= num-permutations (count group3-res)))
     (is (= num-permutations (count group-gen-res)))
     (is (= group3-res group-gen-res))))
+
+(deftest p27-multinomial-coeffients-2
+  (is (=
+       '((("Peter" "Paul") ("Mary")) (("Peter" "Mary") ("Paul")) (("Paul" "Mary") ("Peter")))
+       (group [2 1] ["Peter" "Paul" "Mary"]))))
 
 (deftest p28-sublist-sort
   (is (= '((o) (d e) (d e) (m n) (a b c)  (f g h)  (i j k l))
