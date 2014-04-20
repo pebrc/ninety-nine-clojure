@@ -30,4 +30,4 @@
   integer numbers."
   (if (= y 0)
     x
-    (gcd y (rem x y))))
+    (recur y (rem x y))))
