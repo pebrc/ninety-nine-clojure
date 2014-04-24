@@ -18,3 +18,7 @@
   (is (= 21 (gcd 462 1071)))
   (is (= 1  (gcd 1 1))))
 
+
+(deftest p33-coprime-integers
+  (is (coprime? 14 15))
+  (is (not (coprime? 14 21))))

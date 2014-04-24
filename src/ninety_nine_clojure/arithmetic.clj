@@ -31,3 +31,8 @@
   (if (= y 0)
     x
     (recur y (rem x y))))
+
+
+(defn coprime? [x y]
+  "P33 (*) Determine whether two positive integer numbers are coprime."
+  (= 1 (gcd x y)))
