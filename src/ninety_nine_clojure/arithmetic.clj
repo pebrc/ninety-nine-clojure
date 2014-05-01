@@ -36,3 +36,15 @@
 (defn coprime? [x y]
   "P33 (*) Determine whether two positive integer numbers are coprime."
   (= 1 (gcd x y)))
+
+(defn totient-euler [x]
+  "P34 (**) Calculate Euler's totient function phi(m)."
+  (->> (range 1 (inc x))
+       (map #(/ % x))
+       (filter #(and (ratio? %) (= x (denominator %))))
+       (count)))
+
+(defn totient [x]
+  (->> (range 1 (inc x))
+       (filter #(coprime? % x))
+       (count)))

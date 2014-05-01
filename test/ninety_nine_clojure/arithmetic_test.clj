@@ -22,3 +22,7 @@
 (deftest p33-coprime-integers
   (is (coprime? 14 15))
   (is (not (coprime? 14 21))))
+
+(deftest p34-totient
+  (is (= 8 (totient-euler 20)))
+  (is (= 4 (totient-euler 5))))
