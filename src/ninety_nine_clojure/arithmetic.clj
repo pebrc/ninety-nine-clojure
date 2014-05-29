@@ -48,3 +48,17 @@
   (->> (range 1 (inc x))
        (filter #(coprime? % x))
        (count)))
+
+(defn primes []
+  "Calculates a lazy seq of primes "
+  (->> (range )
+       (map inc)
+       (filter #(fast-prime? %))))
+
+(defn prime-factors 
+  ([x] (prime-factors x (primes) []))
+  ([x primes acc]
+     (cond (>= 1 x) acc
+           (= 0 (rem x (first primes))) (recur (quot x (first primes)) primes  (conj acc (first primes)))
+           :else (recur  x (rest primes) acc)
+           )) )

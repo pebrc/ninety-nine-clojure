@@ -26,3 +26,12 @@
 (deftest p34-totient
   (is (= 8 (totient-euler 20)))
   (is (= 4 (totient-euler 5))))
+
+(deftest p35-prime-factors
+  (is (= '() (prime-factors 1 )))
+  (is (= '(2) (prime-factors 2 )))
+  (is (= '(3) (prime-factors 3 )))
+  (is (= '(2 2) (prime-factors 4 )))
+  (is (= '(5) (prime-factors 5 )))
+  (is (= '(2 3) (prime-factors 6 )))
+  (is (= '(3 3 5 7) (prime-factors 315))))
