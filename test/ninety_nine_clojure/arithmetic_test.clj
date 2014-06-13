@@ -35,3 +35,6 @@
   (is (= '(5) (prime-factors 5 )))
   (is (= '(2 3) (prime-factors 6 )))
   (is (= '(3 3 5 7) (prime-factors 315))))
+
+(deftest p36-prime-factors-multiplicity
+  (is (= {3 2, 5 1, 7 1} (prime-factors-multiplicity 315) )))

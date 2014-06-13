@@ -1,5 +1,6 @@
 (ns ninety-nine-clojure.arithmetic
-  (:require [clojure.math.numeric-tower :as math]))
+  (:require [clojure.math.numeric-tower :as math]
+            [ninety-nine-clojure.lists :as list]))
 
 
 (defn prime? [x]
@@ -55,10 +56,18 @@
        (map inc)
        (filter #(fast-prime? %))))
 
-(defn prime-factors 
+(defn prime-factors
+  "P35 (**) Determine the prime factors of a given positive integer."
   ([x] (prime-factors x (primes) []))
   ([x primes acc]
      (cond (>= 1 x) acc
            (= 0 (rem x (first primes))) (recur (quot x (first primes)) primes  (conj acc (first primes)))
            :else (recur  x (rest primes) acc)
            )) )
+
+(defn prime-factors-multiplicity
+  "P36 (**) Determine the prime factors of a given positive integer
+  (2). Construct a list containing the prime factors and their
+  multiplicity. Alternately, use a map for the result."
+  [x]
+  (apply assoc {} (mapcat reverse (list/encode (prime-factors x)))))
