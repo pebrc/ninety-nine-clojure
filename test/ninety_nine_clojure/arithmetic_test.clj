@@ -38,3 +38,6 @@
 
 (deftest p36-prime-factors-multiplicity
   (is (= {3 2, 5 1, 7 1} (prime-factors-multiplicity 315) )))
+
+(deftest p37-totient-improved
+  (is (= 144 (fast-totient 315))))
