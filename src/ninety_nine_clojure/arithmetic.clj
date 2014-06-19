@@ -1,6 +1,7 @@
 (ns ninety-nine-clojure.arithmetic
   (:require [clojure.math.numeric-tower :as math]
-            [ninety-nine-clojure.lists :as list]))
+            [ninety-nine-clojure.lists :as list]
+            [criterium.core :as c]))
 
 
 (defn prime? [x]
@@ -52,15 +53,14 @@
        (filter #(coprime? % x))
        (count)))
 
-(defn primes []
-  "Calculates a lazy seq of primes "
+(def primes
   (->> (range )
        (map inc)
        (filter #(fast-prime? %))))
 
 (defn prime-factors
   "P35 (**) Determine the prime factors of a given positive integer."
-  ([x] (prime-factors x (primes) []))
+  ([x] (prime-factors x primes []))
   ([x primes acc]
      (cond (>= 1 x) acc
            (= 0 (rem x (first primes))) (recur (quot x (first primes)) primes  (conj acc (first primes)))
@@ -87,3 +87,14 @@ bth power of a."
   [x]
   (->> (prime-factors-multiplicity x)
        (reduce #(* %1 (dec (key %2)) (math/expt (key %2) (dec (val %2)))) 1 )))
+
+(defn compare-totient-functions
+  "P38 (*) Compare the two methods of calculating Euler's totient
+  function"
+  [x]
+  (prn "Preload prime numbers ...")
+  (vec (take-while (partial > (math/sqrt x)) primes))
+  (prn "Benchmarking Euler's totient")
+  (c/bench (totient-euler x))
+  (prn "Benchmarking fast totient")
+  (c/bench (fast-totient x)))

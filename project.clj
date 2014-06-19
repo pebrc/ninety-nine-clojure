@@ -5,4 +5,8 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/core.match "0.2.1"]          
-                 [org.clojure/math.numeric-tower "0.0.4"]])
+                 [org.clojure/math.numeric-tower "0.0.4"]
+                 [org.clojure/math.combinatorics "0.0.7"]
+                 [com.stuartsierra/frequencies "0.1.0"]
+                 [criterium "0.4.3"]
+                 [cheshire "5.3.1"]])
