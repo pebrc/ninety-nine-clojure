@@ -98,3 +98,8 @@ bth power of a."
   (c/bench (totient-euler x))
   (prn "Benchmarking fast totient")
   (c/bench (fast-totient x)))
+
+(defn primes-range
+  "P39 (*) A list of prime numbers."
+  [from to]
+  (take-while #(<= % to) (drop-while #(< % from) primes)))

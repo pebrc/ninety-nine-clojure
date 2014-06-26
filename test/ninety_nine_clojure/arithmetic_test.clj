@@ -41,3 +41,6 @@
 
 (deftest p37-totient-improved
   (is (= 144 (fast-totient 315))))
+
+(deftest p39-primes-range
+  (is (= '(7 11 13 17 19 23 29 31) (primes-range 7 31))))
