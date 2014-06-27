@@ -103,3 +103,15 @@ bth power of a."
   "P39 (*) A list of prime numbers."
   [from to]
   (take-while #(<= % to) (drop-while #(< % from) primes)))
+
+
+(defn goldbach
+  "P40 (**) Goldbach's conjecture."
+  [x]
+  (->> (take-while #(< % x) primes)
+       (filter #(prime? (- x %)))
+       (first)
+       (repeat 2 )
+       (map vector [0 x])
+       (map #(apply (comp  math/abs -) %))))
+

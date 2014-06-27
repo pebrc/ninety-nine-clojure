@@ -44,3 +44,6 @@
 
 (deftest p39-primes-range
   (is (= '(7 11 13 17 19 23 29 31) (primes-range 7 31))))
+
+(deftest p40-goldbach
+  (is (= [5 23] (goldbach 28))))
