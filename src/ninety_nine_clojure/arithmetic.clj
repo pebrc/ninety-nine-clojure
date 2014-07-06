@@ -106,12 +106,13 @@ bth power of a."
 
 
 (defn goldbach
-  "P40 (**) Goldbach's conjecture."
+  "P40 (**) Goldbach's conjecture: Every even integer greater than 2
+  can be expressed as the sum of two primes."
   [x]
-  (->> (take-while #(< % x) primes)
-       (filter #(prime? (- x %)))
-       (first)
-       (repeat 2 )
-       (map vector [0 x])
-       (map #(apply (comp  math/abs -) %))))
+  {:pre [(even? x) (< 2 x)]}
+  (let [prime  (->> (take-while #(< % x) primes)
+                (filter #(prime? (- x %)))
+                (first))]
+    [prime (- x prime)]))
+
 

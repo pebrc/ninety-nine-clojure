@@ -1,5 +1,9 @@
 (ns ninety-nine-clojure.arithmetic-test
   (:require [clojure.test :refer :all]
+            [clojure.test.check :as tc]
+            [clojure.test.check.generators :as gen]
+            [clojure.test.check.properties :as prop]
+            [clojure.test.check.clojure-test :refer :all]
             [ninety-nine-clojure.arithmetic :refer :all]))
 
 (deftest p31-test-primes
@@ -47,3 +51,15 @@
 
 (deftest p40-goldbach
   (is (= [5 23] (goldbach 28))))
+
+(def even-nats-greater-two (gen/such-that #(< 2 %) (gen/fmap #(* 2 %) gen/nat)))
+
+
+(defspec goldbach-conjecture
+  100
+  (prop/for-all [i even-nats-greater-two]
+                (let [res (goldbach i)]
+                  (and
+                   (= 2 (count res))
+                   (every? prime? res)
+                   (= i (reduce + res))))))
