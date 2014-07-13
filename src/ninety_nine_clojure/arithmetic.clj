@@ -120,8 +120,8 @@ bth power of a."
   "A list of Goldbach compositions. Given a range of integers by its
   lower and upper limit, print a list of all even numbers and their
   Goldbach composition. When an additional second argument is supplied
-  the lower of the prime numbers of each composition must greater than
-  that limit."
+  the lower of the prime numbers of each composition must be greater
+  than that limit."
   ([range] (print-goldbach range 0) )
   ([range lower-limit]
      (->> range
