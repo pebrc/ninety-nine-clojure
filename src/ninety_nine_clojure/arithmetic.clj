@@ -116,3 +116,17 @@ bth power of a."
     [prime (- x prime)]))
 
 
+(defn print-goldbach
+  "A list of Goldbach compositions. Given a range of integers by its
+  lower and upper limit, print a list of all even numbers and their
+  Goldbach composition. When an additional second argument is supplied
+  the lower of the prime numbers of each composition must greater than
+  that limit."
+  ([range] (print-goldbach range 0) )
+  ([range lower-limit]
+     (->> range
+          (filter #(and (even? %) (< 2 %)))
+          (map #(concat [%] (goldbach %)))
+          (filter #(< lower-limit (second %)))
+          (map #(println (apply format "%d = %d + %d" %)))
+          (doall))))
