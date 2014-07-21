@@ -27,9 +27,9 @@
 (def inputs [[true true] [true false] [false true] [false false]])
 
 (defmacro table [expr]
-  (let [header  [:a :b :result]
-        rows    (->> inputs
-                     (map #(interleave header (flatten (vector % (apply expr %)))))
+  `(let [header#  [:a :b :result]
+        rows#    (->> inputs
+                     (map #(interleave header# (flatten (vector % (apply ~expr %)))))
                      (map #(apply sorted-map %))
                      )]
-    (print-table rows)))
+    (print-table rows#)))
