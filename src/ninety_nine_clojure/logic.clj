@@ -1,10 +1,10 @@
 (ns ninety-nine-clojure.logic
   (:require [clojure.pprint :only print-table]))
 
-(defn and [x y]
+(defn and-fn [x y]
   (if x (if y y false) false))
 
-(defn or [x y]
+(defn or-fn [x y]
   (if x x y))
 
 (defn nand [x y]
@@ -26,7 +26,7 @@
 
 (def inputs [[true true] [true false] [false true] [false false]])
 
-(defn table [expr]
+(defmacro table [expr]
   (let [header  [:a :b :result]
         rows    (->> inputs
                      (map #(interleave header (flatten (vector % (apply expr %)))))
