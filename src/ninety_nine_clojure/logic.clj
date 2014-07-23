@@ -28,8 +28,8 @@
 
 (defmacro table [expr]
   `(let [header#  [:a :b :result]
-        rows#    (->> inputs
-                     (map #(interleave header# (flatten (vector % (apply ~expr %)))))
+         rows#    (->> inputs
+                     (map #(interleave header# (flatten (vector % (apply 'expr %)))))
                      (map #(apply sorted-map %))
                      )]
     (print-table rows#)))
