@@ -26,10 +26,17 @@
 
 (def inputs [[true true] [true false] [false true] [false false]])
 
+
+
+(defmacro evaluator [expr]
+  `(fn [& args#]
+     (eval `(~'~expr ~@args#))))
+
+
 (defmacro table [expr]
   `(let [header#  [:a :b :result]
-         rows#    (->> inputs
-                     (map #(interleave header# (flatten (vector % (apply 'expr %)))))
-                     (map #(apply sorted-map %))
-                     )]
-    (print-table rows#)))
+         ev# (evaluator ~expr)
+         rows# (map (fn [x#] (interleave header# (flatten (vector x# (apply ev# x#) )))) inputs)
+         sorted-rows# (map (fn [y#] (apply sorted-map y#)) rows#)]
+     (clojure.pprint/print-table sorted-rows#)
+     ))
