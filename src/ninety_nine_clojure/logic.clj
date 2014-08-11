@@ -38,3 +38,21 @@
                     (map (fn [x#] (interleave header# (flatten [x# (apply ev# x#)] ))))
                     (map (fn [x#] (apply sorted-map x#))))]
      (clojure.pprint/print-table rows#)))
+
+(defmacro infix
+  ([] '())
+  ([x] (if (seq? x)
+         `(infix ~@x)
+         x))
+  ([op a]
+     `(~op ~a))
+  ([a op b]
+     `(~op (infix ~a) (infix ~b)))
+  ([a op1 op2 b]
+     `(~op1 (infix ~a) (~op2 (infix ~b)))))
+
+(defmacro i-expr [& args]
+  (let [a (gensym)
+        b (gensym)
+        code (clojure.walk/postwalk-replace {'a a 'b b} args)]
+    `(fn [~a ~b] (infix ~@code))))
