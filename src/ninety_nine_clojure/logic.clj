@@ -39,6 +39,8 @@
                     (map (fn [x#] (apply sorted-map x#))))]
      (clojure.pprint/print-table rows#)))
 
+(def unary? {'not true})
+
 (defmacro infix
   ([] '())
   ([x] (if (seq? x)
@@ -48,8 +50,14 @@
      `(~op ~a))
   ([a op b]
      `(~op (infix ~a) (infix ~b)))
-  ([a op1 op2 b]
-     `(~op1 (infix ~a) (~op2 (infix ~b)))))
+  ([a b c d]
+     (if (unary? a)
+       `(~c (~a (infix ~b)) (infix ~d) )
+       `(~b (infix ~a) (~c (infix ~d)))
+       )
+     )
+  ([un1 a op un2 b]
+     `(~op (~un1 (infix ~a) ) (~un2 (infix ~b)))))
 
 (defmacro i
   "Creates a Clojure function from a logical expression in infix
