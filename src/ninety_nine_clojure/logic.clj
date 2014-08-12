@@ -51,7 +51,11 @@
   ([a op1 op2 b]
      `(~op1 (infix ~a) (~op2 (infix ~b)))))
 
-(defmacro i-expr [& args]
+(defmacro i
+  "Creates a Clojure function from a logical expression in infix
+  syntax like 'a and b'. Binds two variable a and b by convention"
+  [& args]
+  
   (let [a (gensym)
         b (gensym)
         code (clojure.walk/postwalk-replace {'a a 'b b} args)]
