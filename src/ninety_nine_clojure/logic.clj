@@ -56,13 +56,12 @@
        `(~b (infix ~a) (~c (infix ~d)))
        ))
   ([a b c d & more]
-     (if (or (unary? c) (unary? a))
-       (let [exp (first more)
-             tail (rest more)]
-         `(~exp (infix ~a ~b ~c ~d) (infix ~tail)))       
-       `(~d (~b (infix ~a) (infix ~c)) (infix ~@more))
-       )
-     ))
+     (cond
+      (and (unary? d) (unary? a)) `(~c (~a (infix ~b)) (~d (infix ~more)))
+      (or (unary? c) (unary? a)) (let [exp (first more)
+                                       tail (rest more)]
+                                    `(~exp (infix ~a ~b ~c ~d) (infix ~tail)))
+       :else  `(~d (~b (infix ~a) (infix ~c)) (infix ~@more)))))
 
 (defmacro i
   "Creates a Clojure function from a logical expression in infix

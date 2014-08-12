@@ -14,3 +14,12 @@
 
 (deftest infix-nested-first
   (is true (infix (false or true) and true)))
+
+(deftest infix-one-unary
+  (is true (infix (not false and true))))
+
+(deftest infix-with-unary-last
+  (is true (infix (false or not false))))
+
+(deftest infix-with-two-unary-ops
+  (is true (infix (not false and not false))))
