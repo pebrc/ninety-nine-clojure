@@ -73,7 +73,8 @@
 
 (defmacro i
   "Creates a Clojure function from a logical expression in infix
-  syntax like 'a and b'. Binds two variable a and b by convention"
-  [bindings & args]  
+  syntax like 'a and b'. Takes a vector of used symbols as its first
+  argument and the logical expression in infix syntax as its second"
+  [bindings & e]  
   (let [bindingslist (list bindings) ]
-    `(with-meta (fn  ~bindings (infix ~@args)) {:arglists '~bindingslist})))
+    `(with-meta (fn  ~bindings (infix ~@e)) {:arglists '~bindingslist})))
