@@ -78,3 +78,22 @@
   [bindings & e]  
   (let [bindingslist (list bindings) ]
     `(with-meta (fn  ~bindings (infix ~@e)) {:arglists '~bindingslist})))
+
+(declare grey)
+
+(defn grey* [bits]
+  "Gray code.
+An n-bit Gray code is a sequence of n-bit strings constructed
+according to certain rules. For example, n = 1: C(1) = ('0', '1'). n =
+2: C(2) = ('00', '01', '11', '10'). n = 3: C(3) = ('000', '001',
+'011', '010', '110', '111', '101', '100'). Find out the construction
+rules and write a function to generate Gray codes."
+  (cond
+   (= bits 1) ["0" "1"]
+   :else (let [lower (grey (dec bits))
+               upper (->> (reverse lower)
+                          (map #(str "1" %)))
+               lower-prefixed (map #(str "0" %) lower)]
+           (concat lower-prefixed upper))))
+
+(def grey (memoize grey*))
