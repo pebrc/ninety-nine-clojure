@@ -24,14 +24,23 @@
 (deftest infix-with-two-unary-ops
   (is true (infix (not false and not false))))
 
-(deftest grey-1
-  (is (= ["0" "1"]( grey 1))))
+(deftest gray-1
+  (is (= ["0" "1"]( gray 1))))
 
-(deftest grey-2
-  (is (= ["00" "01" "11" "10"] (grey 2))))
+(deftest gray-2
+  (is (= ["00" "01" "11" "10"] (gray 2))))
 
-(deftest grey-3
-  (is (= ["000" "001" "011" "010" "110" "111" "101" "100"] (grey* 3))))
+(deftest gray-3
+  (is (= ["000" "001" "011" "010" "110" "111" "101" "100"] (gray* 3))))
 
-(deftest grey-3-memoized
-  (is (= ["000" "001" "011" "010" "110" "111" "101" "100"] (grey 3))))
+(deftest gray-3-memoized
+  (is (= ["000" "001" "011" "010" "110" "111" "101" "100"] (gray 3))))
+
+(deftest gray-bitwise-1
+  (is (= ["0" "1"]( gray-seq-bitwise 1))))
+
+(deftest gray-bitwise-2
+  (is (= ["00" "01" "11" "10"] (gray-seq-bitwise 2))))
+
+(deftest gray-bitwise-3
+  (is (= ["000" "001" "011" "010" "110" "111" "101" "100"] (gray-seq-bitwise 3))))

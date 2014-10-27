@@ -79,9 +79,9 @@
   (let [bindingslist (list bindings) ]
     `(with-meta (fn  ~bindings (infix ~@e)) {:arglists '~bindingslist})))
 
-(declare grey)
+(declare gray)
 
-(defn grey* [bits]
+(defn gray* [bits]
   "Gray code.
 An n-bit Gray code is a sequence of n-bit strings constructed
 according to certain rules. For example, n = 1: C(1) = ('0', '1'). n =
@@ -90,10 +90,24 @@ according to certain rules. For example, n = 1: C(1) = ('0', '1'). n =
 rules and write a function to generate Gray codes."
   (cond
    (= bits 1) ["0" "1"]
-   :else (let [lower (grey (dec bits))
+   :else (let [lower (gray (dec bits))
                upper (->> (reverse lower)
                           (map #(str "1" %)))
                lower-prefixed (map #(str "0" %) lower)]
            (concat lower-prefixed upper))))
 
-(def grey (memoize grey*))
+(def gray (memoize gray*))
+
+(defn gray-encode [n]
+  (bit-xor n (bit-shift-right n 1)))
+
+(defn gray-decode [n]
+  (loop [g 0 bits n]
+    (if (zero? bits)
+      g
+      (recur (bit-xor g bits) (bit-shift-right bits 1)))))
+
+(defn gray-seq-bitwise [n]
+  (->> (range (reduce * (repeat n 2)))
+       (map gray-encode)
+       (map #(clojure.pprint/cl-format nil (str "~" n "'0b") %))))
