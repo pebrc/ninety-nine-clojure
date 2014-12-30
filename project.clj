@@ -8,6 +8,7 @@
                  [org.clojure/test.check "0.5.8"]
                  [org.clojure/math.numeric-tower "0.0.4"]
                  [org.clojure/math.combinatorics "0.0.7"]
+                 [org.clojure/tools.trace "0.7.8"]
                  [com.stuartsierra/frequencies "0.1.0"]
                  [criterium "0.4.3"]
                  [cheshire "5.3.1"]])

@@ -1,7 +1,6 @@
 (ns ninety-nine-clojure.logic
   (:require [clojure.pprint :only print-table]
-            [clojure.math.combinatorics :as combo]
-            [clojure.zip :as zip]))
+            [clojure.math.combinatorics :as combo]))
 
 (defn and-fn [x y]
   (if x (if y y false) false))
@@ -113,8 +112,7 @@ rules and write a function to generate Gray codes."
        (map gray-encode)
        (map #(clojure.pprint/cl-format nil (str "~" n "'0b") %))))
 
-
-(def test-input '([a 45] [b 13] [c 12] [d 16] [e 9] [f 5]))
+;;; Problem 50: Huffman code
 
 (defn by-lowest-freq [leaves]
   (sort #(< (:freq %1) (:freq %2)) leaves))
@@ -134,48 +132,35 @@ rules and write a function to generate Gray codes."
 (defn node [l r]
   (assoc {:type :node} :left l :right r :freq (+ (:freq l) (:freq r))))
 
-(defn branch? [n]
-  (= :node (:type n)))
 
-(defn children [n]
-  [(:left n) (:right n)])
-
-
-(defn build-tree
+(defn  build-tree
   ([input] (build-tree input []))
   ([input nodes]
-                    (if (empty? input)
-                      (first nodes)
-                      (let [[l q1 q2]  (next-lowest-freq input nodes)
-                            [r q3 q4] (next-lowest-freq q1 q2)         
-                            node (node l r)]
-                        (recur  q3 (conj (vec q4) node))))))
+   (if (and  (empty? input) (= 1 (count nodes)))
+     (first nodes)
+     (let [[l q1 q2]  (next-lowest-freq input nodes)
+           [r q3 q4] (next-lowest-freq q1 q2)         
+           node (node l r)]
+       (recur  q3 (by-lowest-freq (conj (vec q4) node)))))))
 
 
 (defn make-leaves [input]
   (map leaf input))
 
 (defn build-huffman-tree [input]
-  (build-tree (by-lowest-freq (make-leaves test-input)) '()))
+  (build-tree (by-lowest-freq (make-leaves input)) '()))
 
-(defn huff-zipper [huffman-tree]
-  (zip/zipper branch? children build-tree huffman-tree))
+(defn branch? [n]
+  (= :node (:type n)))
 
-(def ht (build-huffman-tree test-input))
-
-(def hz (huff-zipper (build-huffman-tree test-input)))
-
-(def locs (take-while (complement zip/end?) (iterate zip/next hz)))
-
-(doseq [loc locs]
-  (println (zip/path loc)))
-
-(defn list-tree
-  ([tree] (list-tree tree ""))
+(defn map-symbols
+  ([tree] (map-symbols tree ""))
   ([tree prefix]
      (if (branch? tree)
-       (concat  (list-tree (:left tree) (str prefix "0")) (list-tree (:right tree) (str prefix "1")))
+       (concat  (map-symbols (:left tree) (str prefix "0"))
+                (map-symbols (:right tree) (str prefix "1")))
        [[(:val tree) prefix]])))
 
-(list-tree ht)
-
+(defn probs [items]
+  (let [freqs (frequencies items) sum (reduce + (vals freqs))]
+    (into '() (map (fn [[k v]] [k (/ v sum)]) freqs))))
