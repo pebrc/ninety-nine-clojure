@@ -1,5 +1,6 @@
 (ns ninety-nine-clojure.bintrees
-  (:require [clojure.core.match :refer [match]]))
+  (:require [clojure.core.match :refer [match]]
+            [clojure.math.numeric-tower :refer [abs]]))
 
 (defn tree? [t]
   (match t
@@ -7,6 +8,30 @@
          nil                                       true
          :else                                     false))
 
+(defn lefts [t]
+  (first (next t)))
+
+(defn rights [t]
+  (last t))
+
+(defn num-nodes [tree]
+  (if (nil? tree)
+    0
+    (+ 1 (num-nodes (lefts tree)) (num-nodes (rights tree)))))
+
+(defn balanced? [t]
+  (>= 1 (abs (-
+              (num-nodes (lefts t))
+              (num-nodes (rights t))))))
+
+
+(defn breath-first-traverse [& trees]
+  (when trees
+    (concat trees 
+      (->> trees
+        (mapcat #(vector (first (next %)) (last %)))
+        (filter #(not (nil? %) ))
+        (apply breath-first-traverse)))))
 
 
 (defn balanced-trees
