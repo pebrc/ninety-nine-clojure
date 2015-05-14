@@ -25,6 +25,6 @@
   50
   (prop/for-all [i gen/nat]
                 (->> (balanced-trees i 'x)
-                     (apply  breath-first-traverse)
+                     (apply  breadth-first-traverse)
                      (map balanced?)
                      (reduce #(and %1 %2)))))

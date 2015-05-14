@@ -25,13 +25,13 @@
               (num-nodes (rights t))))))
 
 
-(defn breath-first-traverse [& trees]
+(defn breadth-first-traverse [& trees]
   (when trees
     (concat trees 
       (->> trees
         (mapcat #(vector (first (next %)) (last %)))
         (filter #(not (nil? %) ))
-        (apply breath-first-traverse)))))
+        (apply breadth-first-traverse)))))
 
 
 (defn balanced-trees
