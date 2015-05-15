@@ -22,7 +22,7 @@
   (is (= false (tree? [:a [:b] nil]))))
 
 (defspec balanced-trees-are-balanced
-  50
+  20
   (prop/for-all [i gen/nat]
                 (->> (balanced-trees i 'x)
                      (apply  breadth-first-traverse)

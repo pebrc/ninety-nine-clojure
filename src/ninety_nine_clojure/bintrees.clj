@@ -50,16 +50,19 @@
   nil, nil), t(x, nil, t(x, nil, nil))) ; T = t(x, t(x, nil, nil),
   t(x, t(x, nil, nil), nil)) ; etc......No"
   [n v]
-  (let [rem (rem (int n) 2)
-        map-trees (fn ([subtrees]
-                     (mapcat (fn [l] (map (fn [r] (vector v l r)) subtrees))subtrees) )
-                    ([lefts rights]
-                     (mapcat (fn [l] (mapcat (fn [r] [(vector v l r) (vector v r l)]) rights))lefts)))]
+  (let [n0 (dec n)
+        n1 (int (/ n0 2))
+        n2  (- n0 n1)
+        distrib (fn
+                  ([subtrees]
+                   (mapcat (fn [l] (map (fn [r] (vector v l r)) subtrees))subtrees) )
+                  ([lefts rights]
+                   (mapcat (fn [l] (mapcat (fn [r] [(vector v l r) (vector v r l)]) rights))lefts)))]
     (cond
       (< n 1)  [nil] 
-      (= rem 1) (let [subtrees (balanced-trees (/ n 2) v)]
-           (map-trees subtrees))
-      (= rem 0)  (let [lower (balanced-trees (/ (dec n) 2) v)
-                       higher (balanced-trees (inc (/ (dec n)  2)) v)]
-                   (map-trees  lower higher )) )) )
+      (= n1 n2) (let [subtrees (balanced-trees n1 v)]
+                  (distrib subtrees))
+      :odd  (let [lower (balanced-trees n1  v)
+                  higher (balanced-trees n2 v)]
+              (distrib lower higher )) )) )
     
