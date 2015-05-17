@@ -66,10 +66,9 @@
               (distrib lower higher )) )) )
 
 (defn mirror? [l r]
-  {:pre [(tree? l) (tree? r)]}
-  (cond
-    (= nil l r) true
-    (and (mirror? (lefts l) (rights r)) (mirror? (rights l) (lefts r))) true
+  (match [l r]
+    [nil nil] true
+    [[_, l1, r1] [_, l2, r2]] (and (mirror? l1 r2) (mirror? l2 r1)) 
     :else false))
 
 (defn symmetric?
