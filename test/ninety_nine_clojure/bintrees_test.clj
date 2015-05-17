@@ -21,10 +21,16 @@
 (deftest p54-invalid-successor
   (is (= false (tree? [:a [:b] nil]))))
 
-(defspec balanced-trees-are-balanced
+(defspec p55-balanced-trees-are-balanced
   20
   (prop/for-all [i gen/nat]
                 (->> (balanced-trees i 'x)
                      (apply  breadth-first-traverse)
                      (map balanced?)
                      (reduce #(and %1 %2)))))
+
+(deftest p56-detects-symmetric-trees
+  (is (= true (symmetric? [:a [:b nil nil] [:c nil nil]]))))
+
+(deftest p56-fails-for-asymmetric-trees
+  (is (= false (symmetric? [:a nil [:b nil nil]]))))
