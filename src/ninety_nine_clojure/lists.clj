@@ -4,8 +4,9 @@
 
 (defn last-builtin ([input] (last input)))
 
-(defn my-last [input]
+(defn my-last 
   "P01 (*) Find the last element of a list."
+  [input]
   (if (next input)
     (recur (next input))
     (first input)))
@@ -30,30 +31,35 @@
 
 (defn count-builtin [xs] (count xs))
 
-(defn my-count [xs]
+(defn my-count 
   "P04 (*) Find the number of elements of a list."
+  [xs]
   (loop [num 0 xs xs]
     (if (next xs)
       (recur (+ num 1) (next xs))
       (+ num 1))))
 
-(defn my-count-reduce [xs]
+(defn my-count-reduce 
   "P04 (*) Find the number of elements of a list."
+  [xs]
   (reduce (fn [c xs] (inc c)) 0 xs))
 
-(defn my-reverse [xs]
+(defn my-reverse 
   "P05 (*) Reverse a list"
+  [xs]
   (loop [ret [] xs xs]
     (if (empty? xs)
       ret
       (recur (cons (first xs) ret) (next xs)))))
 
-(defn my-reverse-reduce [xs]
+(defn my-reverse-reduce 
   "P05 (*) Reverse a list"
+  [xs]
   (reduce #(cons %2 %1) '() xs))
 
-(defn palindrome? [xs]
+(defn palindrome? 
   "P06 (*) Find out whether a list is a palindrome."
+  [xs]
   (= xs (reverse xs)))
 
 
@@ -161,8 +167,9 @@ Implement the so-called run-length encoding data compression method directly. I.
          (map (partial take (dec n)))
          (flatten)))
 
-(defn split [n coll]
+(defn split 
   "P17 (*) Split a list into two parts."
+  [n coll]
   (let [split-acc (fn split-acc [n coll acc]
                     (if (and (seq coll) (> n 0))                      
                       (recur (dec n) (rest coll) (conj acc (first coll)))
@@ -170,8 +177,9 @@ Implement the so-called run-length encoding data compression method directly. I.
     (split-acc n coll [])))
 
 
-(defn slice [s e xs]
+(defn slice 
   "P18 (**) Extract a slice from a list."
+  [s e xs]
   (take (- e s) (drop s xs)))
 
 (defn rotate 
@@ -181,41 +189,48 @@ Implement the so-called run-length encoding data compression method directly. I.
         [newtail newhead] (split at xs)]
     (concat newhead newtail)))
 
-(defn remove-at [k xs]
+(defn remove-at 
   "P20 (*) Remove the Kth element from a list."
+  [k xs]
   (let [[head tail] (split k xs)]
     (list (concat head (rest tail)) (first tail))))
 
-(defn insert-at [elem pos xs]
+(defn insert-at 
   "P21 (*) Insert an element at a given position into a list."
+  [elem pos xs]
   (let [[head tail] (split pos xs)]
     (concat head (cons elem tail))))
 
-(defn my-range [start end]
+(defn my-range 
   "P22 (*) Create a list containing all integers within a given range."
+  [start end]
   (lazy-seq (cons start (if (= start end)
                           '()
                           (my-range (inc start) end))) )
   )
 
-(defn random-select [n from]
+(defn random-select 
   "P23 (**) Extract a given number of randomly selected elements from a list."
+  [n from]
   (loop [n n from from res []]
     (if (= 0 n)
       res
       (let [[rem elem] (remove-at (rand (dec (count from))) from)]           
            (recur (dec n) rem  (cons elem res))))))
 
-(defn random-select-idiomatic [n from]
+(defn random-select-idiomatic 
   "P23 as seen @rodnaph 's"
+  [n from]
   (take n (shuffle from)))
 
-(defn lotto [n m]
+(defn lotto 
   "P24 (*) Lotto: Draw N different random numbers from the set 1..M"
+  [n m]
   (random-select n (range 1 (inc m))))
 
-(defn random-permute [xs]
+(defn random-permute
   "P25 (*) Generate a random permutation of the elements of a list."
+  [xs]
   (random-select (count xs) xs))
 
 (defn node-join [l r]
@@ -232,52 +247,57 @@ Implement the so-called run-length encoding data compression method directly. I.
        (recur (node-join l1 l2) (apply pair-leaves r) nil)
        (node-join l1 l2))))
 
-(defn build-tree [vals]
+(defn build-tree
   "Build a complete, binary search tree, as described in
   http://okmij.org/ftp/Haskell/perfect-shuffle.txt"
+  [vals]
   (apply pair-leaves (map #(conj [:leaf ] %) vals)))
 
-(defn extract-tree [n tree]
+(defn extract-tree 
   "Extracts the n-th element from the tree and returns that element
   paired with a tree with the element deleted. See:
   http://okmij.org/ftp/Haskell/perfect-shuffle.txt"
+  [n tree]
   (match [n tree]
          [0 [:node _ [:leaf e] r]]                                           [e r]
          [n [:node 2  ([:leaf _] :as l) [:leaf r]]]                          [r l]
          [n [:node c ([:leaf _] :as l) r]]
            (let [[res newr] (extract-tree (dec n) r)] [res  [:node (dec c) l newr]])
-         [n [:node (n1 :guard (partial  >= (inc n))) l [:leaf e]]]            [e l]
+         [n [:node (n1 :guard (partial  >= (inc n))) l [:leaf e]]]           [e l]
          [n [:node c ([:node (c1 :guard (partial < n)) _ _] :as l) r]]
            (let [[res newl] (extract-tree n l)] [res [:node (dec c) newl r]])
          [n [:node c ([:node c1 _ _ ] :as l) r]]
            (let [[res newr] (extract-tree (- n c1) r)] [res [:node (dec c) l newr]] ) 
          ))
 
-(defn perfect-functional-shuffle [bst rnds]
+(defn perfect-functional-shuffle 
   "Given a non-empty, complete binary search tree for a sequence of
   elements and a corresponding sequence of numbers such that each
   number is an independent sample from a uniform random distribution,
   computes the corresponding permutation of sequence of elements. See
   also: http://okmij.org/ftp/Haskell/perfect-shuffle.txt"
+  [bst rnds]
   (loop [bst bst rnds rnds acc []]
     (cond
      (= :leaf (first bst)) (conj acc (second bst))
      :otherwise   (let [[el sub-bst] (extract-tree (first rnds) bst)]
         (recur sub-bst (next rnds) (conj acc el))))))
 
-(defn random-permute-functional [xs]
+(defn random-permute-functional 
   "P25 (*) Generate a random permutation of the elements of a list. An
   attempt at a Clojure implemention of the algorithm/Haskell
   implementation described here:
   http://okmij.org/ftp/Haskell/perfect-shuffle.txt"
+  [xs]
   (let [num-elems (count xs)]
     (perfect-functional-shuffle (build-tree xs)  (map  #(rand-int (- num-elems %)) (range num-elems)))))
 
 
 
-(defn combinations [k n]
+(defn combinations 
   "P26 (**) Generate the combinations of K distinct objects chosen
   from the N elements of a list."
+  [k n]
   (cond (= k 0) '(nil)
         (empty? n) nil
         :else (concat (map #(conj % (first n))
@@ -285,20 +305,22 @@ Implement the so-called run-length encoding data compression method directly. I.
                       (combinations k (rest n)))))
 
 
-(defn group3 [coll]
+(defn group3
   "P27 (**) Group the elements of a set into disjoint subsets. a) In
   how many ways can a group of 9 people work in 3 disjoint subgroups
   of 2, 3 and 4 persons?"
+  [coll]
   (for [fours (combinations 4 coll)
         threes (combinations 3 (difference (set coll) (set fours)))
         twos (combinations 2 (difference (set  coll) (set fours) (set threes)))]
     [fours threes twos]))
 
 
-(defn group [groups coll]
+(defn group
   "P27 (**) Group the elements of a set into disjoint subsets.
   Generalize the above predicate in a way that we can specify a list
   of group sizes and the predicate will return a list of groups."
+  [groups coll]
   (if (empty? groups)
     '(nil)
     (mapcat (fn [g]
@@ -306,19 +328,21 @@ Implement the so-called run-length encoding data compression method directly. I.
                  (group (rest groups) (difference (set coll) (set g)))))
          (combinations (first groups) coll))))
 
-(defn lsort [coll]
+(defn lsort 
   "Sorting a list of lists according to length of sublists. We suppose
   that a list contains elements that are lists themselves. The
   objective is to sort the elements of the list according to their
   length. E.g. short lists first, longer lists later, or vice versa."
+  [coll]
   (sort-by #(count %) coll))
 
-(defn lsort-freq [coll]
+(defn lsort-freq 
   "Sorting a list of lists according to length of sublists. Again, we
   suppose that a list contains elements that are lists themselves. But
   this time the objective is to sort the elements according to their
   length frequency; i.e. in the default, sorting is done ascendingly,
   lists with rare lengths are placed first, others with a more
   frequent length come later."
+  [coll]
   (let [freqs (frequencies (map #(count %) coll))]
     (sort #(< (freqs (count %1)) (freqs (count %2))) coll)))
