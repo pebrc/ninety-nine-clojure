@@ -8,21 +8,15 @@
          nil                                       true
          :else                                     false))
 
-(defn lefts [t]
-  (first (next t)))
-
-(defn rights [t]
-  (last t))
-
-(defn num-nodes [tree]
-  (if (nil? tree)
+(defn num-nodes [[_ l r]]
+  (if (= nil l r)
     0
-    (+ 1 (num-nodes (lefts tree)) (num-nodes (rights tree)))))
+    (+ 1 (num-nodes l) (num-nodes r))))
 
-(defn balanced? [t]
+(defn balanced? [[_ l r]]
   (>= 1 (abs (-
-              (num-nodes (lefts t))
-              (num-nodes (rights t))))))
+              (num-nodes l)
+              (num-nodes r)))))
 
 
 (defn breadth-first-traverse [& trees]
