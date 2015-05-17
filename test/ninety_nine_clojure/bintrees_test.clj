@@ -37,3 +37,10 @@
 
 (deftest p56-empty-tree-is-symmetric
   (is (symmetric? nil)))
+
+(deftest p57-construct-bst
+  (is (= [3 [2 [1 nil nil] nil] [5 nil [7 nil nil]]] (->binary-search-tree 3 2 5 7 1))))
+
+(deftest p57-test-p56
+  (is (symmetric? (->binary-search-tree 5 3 18 1 4 12 21)))
+  (is (not (symmetric? (->binary-search-tree 3 2 5 7 4)))))
