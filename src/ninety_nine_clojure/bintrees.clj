@@ -87,7 +87,17 @@
     [[rv l r] _] [rv l (insert-val r v)]))
 
 (defn ->binary-search-tree
-  "Write a function to construct a binary search tree from a list of integer numbers."
+  "P58: Write a function to construct a binary search tree from a list
+  of integer numbers."
   [& xs]
   (reduce insert-val nil xs ))
+
+(defn symmetric-cbalanced-trees
+  "P58: Apply the generate-and-test paradigm to construct all symmetric,
+  completely balanced binary trees with a given number of nodes."
+  [n v]
+  (if (= 0 (rem n 2 ))
+    []; a tree with an even number of nodes can never be symmetric
+    (->> (balanced-trees n v)
+       (filter symmetric?))) )
     

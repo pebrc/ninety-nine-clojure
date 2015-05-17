@@ -44,3 +44,10 @@
 (deftest p57-test-p56
   (is (symmetric? (->binary-search-tree 5 3 18 1 4 12 21)))
   (is (not (symmetric? (->binary-search-tree 3 2 5 7 4)))))
+
+(defspec p58-symmetric-and-completely-balanced
+  20
+  (prop/for-all [i (gen/such-that #(and (< % 100) (< 0 %)) gen/nat)]
+                (->> (symmetric-cbalanced-trees i 'x)
+                     (map #(and (balanced? %) (symmetric? %)))
+                     (reduce #(and %1 %2) true))))
