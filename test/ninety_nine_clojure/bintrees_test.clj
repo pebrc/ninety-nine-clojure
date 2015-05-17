@@ -30,7 +30,10 @@
                      (reduce #(and %1 %2)))))
 
 (deftest p56-detects-symmetric-trees
-  (is (= true (symmetric? [:a [:b nil nil] [:c nil nil]]))))
+  (is (symmetric? [:a [:b nil nil] [:c nil nil]])))
 
 (deftest p56-fails-for-asymmetric-trees
-  (is (= false (symmetric? [:a nil [:b nil nil]]))))
+  (is (not (symmetric? [:a nil [:b nil nil]]))))
+
+(deftest p56-empty-tree-is-symmetric
+  (is (symmetric? nil)))

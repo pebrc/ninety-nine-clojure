@@ -82,7 +82,6 @@
   symmetric. Hint: Write a predicate mirror/2 first to check whether
   one tree is the mirror image of another. We are only interested in
   the structure, not in the contents of the nodes."
-  [t]
-  {:pre [(tree? t)]}
-  (mirror? (lefts t) (rights t)))
+  [[_ l r]]  
+  (mirror? l r))
     
