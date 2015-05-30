@@ -87,7 +87,7 @@
     [[rv l r] _] [rv l (insert-val r v)]))
 
 (defn ->binary-search-tree
-  "P58: Write a function to construct a binary search tree from a list
+  "P57: Write a function to construct a binary search tree from a list
   of integer numbers."
   [& xs]
   (reduce insert-val nil xs ))
