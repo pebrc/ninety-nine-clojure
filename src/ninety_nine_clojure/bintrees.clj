@@ -28,6 +28,16 @@
         (apply breadth-first-traverse)))))
 
 
+(defn distrib
+  "Creates new trees based on the given subtrees. When given two sets
+  ot subtrees it returnes trees of all combinations of the given
+  subtrees."
+  ([v subtrees]
+   (mapcat (fn [l] (map (fn [r] (vector v l r)) subtrees)) subtrees) )
+  ([v lefts rights]
+   (mapcat (fn [l] (mapcat (fn [r] [(vector v l r) (vector v r l)]) rights)) lefts)))
+
+
 (defn balanced-trees
   "P55 (**) Construct completely balanced binary trees In a completely
   balanced binary tree, the following property holds for every node:
@@ -46,18 +56,13 @@
   [n v]
   (let [n0 (dec n)
         n1 (int (/ n0 2))
-        n2  (- n0 n1)
-        distrib (fn
-                  ([subtrees]
-                   (mapcat (fn [l] (map (fn [r] (vector v l r)) subtrees)) subtrees) )
-                  ([lefts rights]
-                   (mapcat (fn [l] (mapcat (fn [r] [(vector v l r) (vector v r l)]) rights)) lefts)))]
+        n2  (- n0 n1)]
     (cond
       (< n 1)  [nil] 
-      (= n1 n2) (distrib (balanced-trees n1 v))
+      (= n1 n2) (distrib v (balanced-trees n1 v))
       :odd  (let [lower (balanced-trees n1  v)
                   higher (balanced-trees n2 v)]
-              (distrib lower higher )) )) )
+              (distrib v lower higher )) )) )
 
 (defn mirror? [l r]
   (match [l r]
@@ -101,3 +106,20 @@
     (->> (balanced-trees n v)
        (filter symmetric?))) )
     
+(defn height-balanced-trees
+  "P59 (**) Construct height-balanced binary trees In a
+  height-balanced binary tree, the following property holds for every
+  node: The height of its left subtree and the height of its right
+  subtree are almost equal, which means their difference is not
+  greater than one.
+
+  Write a function to construct height-balanced binary
+  trees for a given height. The predicate should generate all
+  solutions via backtracking. Put the letter 'x' as information into
+  all nodes of the tree."
+  [h v]
+  (cond (= 0 h) [nil]
+        (= 1 h) [[v nil nil]]
+        :else (let [n1 (height-balanced-trees (dec h) v)
+                    n2 (height-balanced-trees (dec (dec h)) v)]
+                (concat (distrib v n1) (distrib v n1 n2)) )))
