@@ -8,15 +8,31 @@
          nil                                       true
          :else                                     false))
 
+(defn leaf? [[_ l r]]
+  (= nil l r))
+
+(def branch? 
+  (complement leaf?))
+
 (defn num-nodes [[_ l r]]
   (if (= nil l r)
     0
     (+ 1 (num-nodes l) (num-nodes r))))
 
+(defn height [[_ l r]]
+  (if (= nil l r)
+    1
+    (inc (max (height l) (height r)))))
+
 (defn balanced? [[_ l r]]
   (>= 1 (abs (-
               (num-nodes l)
               (num-nodes r)))))
+
+(defn height-balanced? [[_ l r]]
+  (>= 1 (abs (-
+              (height l)
+              (height r)))))
 
 
 (defn breadth-first-traverse [& trees]
@@ -26,6 +42,11 @@
         (mapcat #(vector (first (next %)) (last %)))
         (filter #(not (nil? %) ))
         (apply breadth-first-traverse)))))
+
+
+(defn depth-first
+  [& trees]
+  (mapcat #(tree-seq branch? next %) trees))
 
 
 (defn distrib
@@ -105,8 +126,10 @@
     []; a tree with an even number of nodes can never be symmetric
     (->> (balanced-trees n v)
        (filter symmetric?))) )
-    
-(defn height-balanced-trees
+
+(declare height-balanced-trees)
+
+(defn height-balanced-trees*
   "P59 (**) Construct height-balanced binary trees In a
   height-balanced binary tree, the following property holds for every
   node: The height of its left subtree and the height of its right
@@ -123,3 +146,6 @@
         :else (let [n1 (height-balanced-trees (dec h) v)
                     n2 (height-balanced-trees (dec (dec h)) v)]
                 (concat (distrib v n1) (distrib v n1 n2)) )))
+
+(def height-balanced-trees 
+  (memoize height-balanced-trees*))

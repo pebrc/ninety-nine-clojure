@@ -51,3 +51,14 @@
                 (->> (symmetric-cbalanced-trees i 'x)
                      (map #(and (balanced? %) (symmetric? %)))
                      (reduce #(and %1 %2) true))))
+
+
+
+(defspec p59-height-balanced-trees-are-height-balanced
+  3
+  (prop/for-all [i (gen/choose 1 5) ]
+                (->> (height-balanced-trees i 'x)
+                     (apply depth-first)
+                     (map height-balanced?)
+                     (reduce #(and %1 %2)))))
+
