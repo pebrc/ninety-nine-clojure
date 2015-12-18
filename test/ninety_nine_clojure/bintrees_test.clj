@@ -62,3 +62,12 @@
                      (map height-balanced?)
                      (reduce #(and %1 %2)))))
 
+(defspec p60-minimal-height-balanced-tree
+  3
+  (prop/for-all [i (gen/choose 1 5)
+                 minimum (->> (height-balanced-trees i 'x)
+                           (filter #(= i (height %)))
+                           (map num-nodes)
+                           (apply min))]
+                (= minimum (min-hbal-nodes i))))
+

@@ -14,10 +14,11 @@
 (def branch? 
   (complement leaf?))
 
-(defn num-nodes [[_ l r]]
-  (if (= nil l r)
-    0
-    (+ 1 (num-nodes l) (num-nodes r))))
+(defn num-nodes [[v l r]]
+  (cond
+    (nil? v) 0  
+    (and (nil? l) (nil? r)) 1
+    :else (+ 1 (num-nodes l) (num-nodes r))))
 
 (defn height [[_ l r]]
   (if (= nil l r)
@@ -149,3 +150,24 @@
 
 (def height-balanced-trees 
   (memoize height-balanced-trees*))
+
+(defn min-hbal-nodes
+  "P60 (**) Construct height-balanced binary trees with a given number of nodes.
+  Consider a height-balanced binary tree of height H. What is the
+  maximum number of nodes it can contain? Clearly, MaxN = 2H - 1.
+  However, what is the minimum number MinN? This question is more
+  difficult. Try to find a recursive statement and turn it into a
+  function minHbalNodes that takes a height and returns MinN."
+  [h]
+  (cond
+    (= 0 h) 0
+    (= 1 h) 1
+    :else (+ 1 (min-hbal-nodes (dec h)) (min-hbal-nodes (dec (dec h))))))
+
+
+(comment  (let [fours (->> (height-balanced-trees 4 'x)
+                           (filter #(= 4 (height %)))
+                           (map num-nodes))]
+            ))
+
+
