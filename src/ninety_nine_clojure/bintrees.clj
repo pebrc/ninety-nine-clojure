@@ -128,9 +128,9 @@
     (->> (balanced-trees n v)
        (filter symmetric?))) )
 
-(declare height-balanced-trees)
 
-(defn height-balanced-trees*
+
+(defn height-balanced-trees
   "P59 (**) Construct height-balanced binary trees In a
   height-balanced binary tree, the following property holds for every
   node: The height of its left subtree and the height of its right
@@ -148,8 +148,7 @@
                     n2 (height-balanced-trees (dec (dec h)) v)]
                 (concat (distrib v n1) (distrib v n1 n2)) )))
 
-(def height-balanced-trees 
-  (memoize height-balanced-trees*))
+
 
 (defn min-hbal-nodes
   "P60 (**) Construct height-balanced binary trees with a given number of nodes.
