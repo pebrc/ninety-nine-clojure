@@ -155,6 +155,7 @@
   "P60 (**) Construct height-balanced binary trees with a given number of nodes.
   Consider a height-balanced binary tree of height H. What is the
   maximum number of nodes it can contain? Clearly, MaxN = 2H - 1.
+
   However, what is the minimum number MinN? This question is more
   difficult. Try to find a recursive statement and turn it into a
   function minHbalNodes that takes a height and returns MinN."
@@ -165,9 +166,26 @@
     :else (+ 1 (min-hbal-nodes (dec h)) (min-hbal-nodes (dec (dec h))))))
 
 
-(comment  (let [fours (->> (height-balanced-trees 4 'x)
-                           (filter #(= 4 (height %)))
-                           (map num-nodes))]
-            ))
+(defn min-height-hbal
+  [n]
+  (if (< n 1)
+    0
+    (inc (min-height-hbal (/ n 2)))))
+
+
+(defn max-height-hbal
+  "P60 (**) What is the maximum height H a height-balanced binary tree
+  with N nodes can have?"
+  [n]
+  (last (take-while (partial >= n) (map min-hbal-nodes (iterate inc 1)))))
+
+(defn all-hbal-trees
+  "P60 (**)  ... Now, we can attack the main problem: construct all the
+  height-balanced binary trees with a given nuber of nodes."
+  [n v]
+  (let [xform (comp
+               (mapcat #(height-balanced-trees % v))
+               (filter #(= n (num-nodes %))))]
+    (into [] xform  (range (min-height-hbal n) (inc (max-height-hbal n))))))
 
 
