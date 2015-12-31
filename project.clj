@@ -3,7 +3,7 @@
   :url "http://pbrc.blogspot.com/2014/01/ninety-nine-clojure-problems.html"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.7.0"]
+  :dependencies [[org.clojure/clojure "1.8.0-RC4"]
                  [org.clojure/core.match "0.3.0-alpha4"]
                  [org.clojure/test.check "0.5.8"]
                  [org.clojure/math.numeric-tower "0.0.4"]
@@ -12,4 +12,4 @@
                  [org.clojure/core.typed "0.2.84"]
                  [com.stuartsierra/frequencies "0.1.0"]
                  [criterium "0.4.3"]
-                 [cheshire "5.3.1"]])
+                 [cheshire "5.3.1"]] )
