@@ -176,7 +176,7 @@
   "P60 (**) What is the maximum height H a height-balanced binary tree
   with N nodes can have?"
   [n]
-  (last (take-while (partial >= n) (map min-hbal-nodes (iterate inc 1)))))
+  (last (take-while #(>= n (min-hbal-nodes %)) (iterate inc 1))))
 
 (defn all-hbal-trees
   "P60 (**)  ... Now, we can attack the main problem: construct all the
