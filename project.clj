@@ -10,6 +10,7 @@
                  [org.clojure/math.combinatorics "0.0.7"]
                  [org.clojure/tools.trace "0.7.8"]
                  [org.clojure/core.typed "0.2.84"]
+                 [org.clojure/core.logic "0.8.10"]
                  [com.stuartsierra/frequencies "0.1.0"]
                  [criterium "0.4.3"]
                  [cheshire "5.3.1"]] )
