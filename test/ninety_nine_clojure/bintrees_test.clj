@@ -1,6 +1,7 @@
 (ns ninety-nine-clojure.bintrees-test
   (:require [clojure.test :refer :all]
             [ninety-nine-clojure.bintrees :refer :all]
+            [ninety-nine-clojure.logictrees :as l]
             [clojure.test.check :as tc]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
@@ -62,12 +63,32 @@
                      (map height-balanced?)
                      (reduce #(and %1 %2)))))
 
+(defspec p59-core-logic-height-balanced-trees-are-height-balanced
+  3
+  (prop/for-all [i (gen/choose 1 5) ]
+                (->> (l/height-balanced-trees i)
+                     (apply depth-first)
+                     (map height-balanced?)
+                     (reduce #(and %1 %2)))))
+
+(defspec p59-logic-vs-non-rel-produce-same-results
+  1
+  (prop/for-all [i (gen/choose 1 5)]
+                (is (= (set (l/height-balanced-trees i)) (set (height-balanced-trees i 'x))))))
+
 (defspec p60-minimal-height-balanced-tree
   3
-  (prop/for-all [i (gen/choose 1 5)
-                 minimum (->> (height-balanced-trees i 'x)
-                           (filter #(= i (height %)))
-                           (map num-nodes)
-                           (apply min))]
-                (= minimum (min-hbal-nodes i))))
+  (prop/for-all [i (gen/choose 1 5)]
+                (= (min-hbal-nodes i)
+                   (->> (height-balanced-trees i 'x)
+                              (filter #(= i (height %)))
+                              (map num-nodes)
+                              (apply min)))))
+
+(defspec p60-logic-vs-non-relational
+  1
+  (prop/for-all [i (gen/choose 1 9)]
+                (is (= (set (all-hbal-trees i 'x)) (set (l/all-hbal-trees i))))))
+
+
 
