@@ -167,9 +167,7 @@
 
 (defn min-height-hbal
   [n]
-  (if (< n 1)
-    0
-    (inc (min-height-hbal (/ n 2)))))
+  (int (Math/ceil (/ (Math/log (inc n)) (Math/log 2)))))
 
 
 (defn max-height-hbal
@@ -178,13 +176,14 @@
   [n]
   (last (take-while #(>= n (min-hbal-nodes %)) (iterate inc 1))))
 
+
 (defn all-hbal-trees
   "P60 (**)  ... Now, we can attack the main problem: construct all the
   height-balanced binary trees with a given nuber of nodes."
   [n v]
-  (let [xform (comp
-               (mapcat #(height-balanced-trees % v))
-               (filter #(= n (num-nodes %))))]
-    (into [] xform  (range (min-height-hbal n) (inc (max-height-hbal n))))))
+  (->>  (range (min-height-hbal n) (inc (max-height-hbal n)))
+        (mapcat #(height-balanced-trees % v))
+        (filter #(= n (num-nodes %)))))
+
 
 
