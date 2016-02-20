@@ -98,5 +98,7 @@
 (deftest p61a-leaves
   (is (= '(b d e) (leaves '[a [b nil nil] [c [d nil nil] [e nil nil]]]))))
 
+(deftest p62-internals
+  (is (= '(a c) (internals '[a [b nil nil] [c [d nil nil] [e nil nil]]]))))
 
 

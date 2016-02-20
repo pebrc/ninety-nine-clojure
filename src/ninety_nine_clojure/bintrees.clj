@@ -199,6 +199,15 @@
   [t]
   (count (leaves t)))
 
+(defn internals
+  "P62 (*) Collect the internal nodes of a binary tree in a list.
+  An internal node of a binary tree has either one or two non-empty
+  successors. Write a method internals to collect them in a list."
+  [t]
+  (map first (filter branch? (depth-first t))))
+
+
+
 
 
 
