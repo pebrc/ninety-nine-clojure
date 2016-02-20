@@ -1,6 +1,6 @@
 (ns ninety-nine-clojure.bintrees
   (:require [clojure.core.match :refer [match]]
-            [clojure.math.numeric-tower :refer [abs]]))
+            [clojure.math.numeric-tower :as m]))
 
 (defn tree? [t]
   (match t
@@ -26,12 +26,12 @@
     (inc (max (height l) (height r)))))
 
 (defn balanced? [[_ l r]]
-  (>= 1 (abs (-
+  (>= 1 (m/abs (-
               (num-nodes l)
               (num-nodes r)))))
 
 (defn height-balanced? [[_ l r]]
-  (>= 1 (abs (-
+  (>= 1 (m/abs (-
               (height l)
               (height r)))))
 
@@ -207,6 +207,15 @@
   (map first (filter branch? (depth-first t))))
 
 
+(defn at-level [t l]
+  "P62B (*) Collect the nodes at a given level in a list.
+A node of a binary tree is at level N if the path from the root to the
+node has length N-1. The root node is at level 1. Write a method
+at-level to collect all nodes at a given level in a list.
+"
+  (let [offset (dec (m/expt 2 (dec l)))]
+    (print offset)
+    (map first (take (inc offset)  (drop offset (depth-first t))))))
 
 
 

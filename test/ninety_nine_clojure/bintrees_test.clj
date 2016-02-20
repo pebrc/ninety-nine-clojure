@@ -101,4 +101,7 @@
 (deftest p62-internals
   (is (= '(a c) (internals '[a [b nil nil] [c [d nil nil] [e nil nil]]]))))
 
+(deftest p63-at-level
+  (is (= '(b c) (at-level '[a [b nil nil] [c [d nil nil] [e nil nil]]] 2))))
+
 
