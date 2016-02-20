@@ -214,7 +214,6 @@ node has length N-1. The root node is at level 1. Write a method
 at-level to collect all nodes at a given level in a list.
 "
   (let [offset (dec (m/expt 2 (dec l)))]
-    (print offset)
     (map first (take (inc offset)  (drop offset (depth-first t))))))
 
 
