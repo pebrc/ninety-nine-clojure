@@ -59,7 +59,7 @@
   3
   (prop/for-all [i (gen/choose 1 5) ]
                 (->> (height-balanced-trees i 'x)
-                     (apply depth-first)
+                     (mapcat depth-first)
                      (map height-balanced?)
                      (reduce #(and %1 %2)))))
 
@@ -67,7 +67,7 @@
   3
   (prop/for-all [i (gen/choose 1 5) ]
                 (->> (l/height-balanced-trees i)
-                     (apply depth-first)
+                     (mapcat depth-first)
                      (map height-balanced?)
                      (reduce #(and %1 %2)))))
 
@@ -89,6 +89,13 @@
   1
   (prop/for-all [i (gen/choose 1 9)]
                 (is (= (set (all-hbal-trees i 'x)) (set (l/all-hbal-trees i))))))
+
+
+(deftest p61-count-leaves
+  (is  (= (leaf-count '[x [x [x nil nil] nil] [x nil nil]]) 2)))
+
+
+
 
 
 

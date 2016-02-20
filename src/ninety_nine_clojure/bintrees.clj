@@ -46,8 +46,8 @@
 
 
 (defn depth-first
-  [& trees]
-  (mapcat #(tree-seq branch? next %) trees))
+  [tree]
+  (tree-seq (complement nil?)  #(remove nil? (next %)) tree))
 
 
 (defn distrib
@@ -185,5 +185,11 @@
         (mapcat #(height-balanced-trees % v))
         (filter #(= n (num-nodes %)))))
 
+
+(defn leaf-count
+ "P61 (*)A leaf is a node with no successors. Write a method leafCount
+  to count them."
+  [t]
+  (count  (filter leaf?  (depth-first t))))
 
 
