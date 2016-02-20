@@ -186,10 +186,19 @@
         (filter #(= n (num-nodes %)))))
 
 
+(defn leaves
+  "61A (*) Collect the leaves of a binary tree in a list.
+  A leaf is a node with no successors. Write a method leafList to
+  collect them in a list."
+  [t]
+  (map first (filter leaf?  (depth-first t))))
+
 (defn leaf-count
  "P61 (*)A leaf is a node with no successors. Write a method leafCount
   to count them."
   [t]
-  (count  (filter leaf?  (depth-first t))))
+  (count (leaves t)))
+
+
 
 

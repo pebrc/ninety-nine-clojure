@@ -95,7 +95,8 @@
   (is  (= (leaf-count '[x [x [x nil nil] nil] [x nil nil]]) 2)))
 
 
-
+(deftest p61a-leaves
+  (is (= '(b d e) (leaves '[a [b nil nil] [c [d nil nil] [e nil nil]]]))))
 
 
 
