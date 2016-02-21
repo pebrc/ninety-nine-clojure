@@ -101,7 +101,15 @@
 (deftest p62-internals
   (is (= '(a c) (internals '[a [b nil nil] [c [d nil nil] [e nil nil]]]))))
 
-(deftest p63-at-level
+(deftest p62b-at-level
   (is (= '(b c) (at-level '[a [b nil nil] [c [d nil nil] [e nil nil]]] 2))))
 
+(deftest p63-complete-binary-tree-predicate
+  (is (complete-tree? '[x [x nil nil] nil]))
+  (is (not (complete-tree? '[x nil [x nil nil]]))))
+
+(defspec p63-complete-binary-tree
+  3
+  (prop/for-all [i (gen/choose 1 6)]
+                (is (complete-tree? (complete-binary-tree i 'x)))))
 

@@ -245,3 +245,11 @@
                  [v (build (* 2 a)) (build (inc (* 2 a)))]))]
     (build 1)))
 
+(defn complete-tree? [t]
+  (let [minmax (fn minmax [[v l r] idx]
+                 (cond
+                   (nil? v) [0 idx]
+                   :else (let [[max-l min-l] (minmax l (* 2 idx))
+                               [max-r min-r] (minmax r (inc (* 2 idx)))]
+                           [(max idx max-l max-r) (min min-l min-r)])))]
+    (apply < (minmax t 1))))
