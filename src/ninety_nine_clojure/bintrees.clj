@@ -1,6 +1,7 @@
 (ns ninety-nine-clojure.bintrees
   (:require [clojure.core.match :refer [match]]
-            [clojure.math.numeric-tower :as m]))
+            [clojure.math.numeric-tower :as m]
+            [clojure.zip :as z]))
 
 (defn tree? [t]
   (match t
@@ -253,3 +254,66 @@
                                [max-r min-r] (minmax r (inc (* 2 idx)))]
                            [(max idx max-l max-r) (min min-l min-r)])))]
     (apply < (minmax t 1))))
+
+
+
+
+(defn layout1
+  "Given a binary tree as the usual Prolog term t(X,L,R) (or nil). As
+  a preparation for drawing the tree, a layout algorithm is required
+  to determine the position of each node in a rectangular grid.  In
+  this layout strategy, the position of a node v is obtained by the
+  following two rules: x(v) is equal to the position of the node v in
+  the inorder y(v) is equal to the depth of the node v in the tree
+  sequence "
+  [t]
+  )
+
+
+
+(def t '[f [b [a nil nil] [d [c nil nil] [e nil nil]]] [g nil [i [h nil nil] nil]]])
+(def zp (z/zipper (complement nil?) rest (fn [n c] (apply vector n c)) t))
+
+
+
+(defmacro spy [f]
+  `(let [res# ~f] 
+     (println res#)
+     res#))
+
+(defn next-in-order [loc]
+  (if (= :end (loc 1))
+    loc
+    (or
+     (and (z/branch? loc) (z/right (z/down loc)) (loop [p (z/right (z/down loc))]
+                                                   (if (z/down p)
+                                                     (recur (z/down p))
+                                                     p)))
+     (and (not (z/right loc)) (if (z/up loc)
+                                (loop [p loc]
+                                  (if (z/up p)
+                                    (or (z/up (z/right (z/up p))) (recur (z/up p)))
+                                    [(z/node loc) :end]))
+                                (-> loc z/down z/rightmost)
+                                ))
+     (and (not (z/left loc)) (z/up loc)))
+    ))
+
+
+(def zp-ready (-> zp z/down z/down))
+(-> zp-ready z/node) 
+
+(defn walk [zipper f]
+  (loop [loc zipper]
+    (if (z/end? loc)
+      (z/root loc)
+      (let [_ (println (z/node loc))]
+        (recur (f loc))))))
+
+(walk zp-ready next-in-order)
+
+(def vzip (z/vector-zip t))
+(-> vzip z/down z/right)
+(-> vzip z/down z/right (z/edit (fn [n] (apply vector 'd (rest (spy n))))) z/root)
+(-> vzip z/next z/next z/next )
+(-> zp z/down)
