@@ -3,6 +3,12 @@
             [clojure.math.numeric-tower :as m]
             [clojure.zip :as z]))
 
+(defmacro spy [f]
+  `(let [res# ~f]
+     (println (apply str (repeat 10 "-" )))
+     (println  '~f "->" res#)
+     res#))
+
 (defn tree? [t]
   (match t
          [label (true :<< tree?) (true :<< tree?)] true
@@ -255,65 +261,77 @@
                            [(max idx max-l max-r) (min min-l min-r)])))]
     (apply < (minmax t 1))))
 
+(defn tree-zip
+  "Returns a zipper for the binary trees defined in this namespace."
+  [t]
+  (z/zipper (complement nil?) rest (fn [n c] (with-meta (apply vector (first n) c) (meta n))) t))
 
+(defn first-in-order
+  "Moves to the first loc in an in-order traversal. If already at the
+  end, stays there. Stays in the current subtree."
+  [loc]
+  (if (= :ioe (loc 1))
+    loc
+    (loop [p loc]
+      (if (z/down p)
+        (recur (z/down p))
+        p))))
 
+(defn next-in-order 
+  "Moves to the next loc in an in-order traversal. When reaching the
+  end, returns a distinguished loc detectable via end-in-order?. If
+  already at the end, stays there."
+  [loc]
+  (if (= :ioe (loc 1))
+    loc
+    (or
+     (and (z/branch? loc) (z/right (z/down loc)) (first-in-order (z/right (z/down loc))))
+     (and (not (z/right loc)) (loop [p loc]
+                                (if (z/up p)
+                                  (or (z/up (z/right (z/up p))) (recur (z/up p)))
+                                  [(z/node loc) :ioe])))
+     (and (not (z/left loc)) (z/up loc)))))
+
+(defn end-in-order?
+  "Returns true if loc represents the end of an in-order traversal"
+  [loc]
+  (= :ioe (loc 1)))
+
+(defn tree-edit [zipper f next]
+  (loop [loc zipper state {}]  
+    (let [node (z/node loc)
+          path (z/path loc)
+          depth (inc (count path))
+          [new-node new-state :as res] (f node (assoc state :depth depth))
+          new-loc (if (= new-node node)
+                    loc
+                    (spy (z/replace loc new-node)))
+          next-loc (next new-loc)]
+      (if (end-in-order? next-loc)
+        (z/root new-loc)
+        (recur next-loc new-state)))))
+
+(defn inorder-tree-edit [zipper f]
+  (tree-edit zipper f next-in-order))
 
 (defn layout1
-  "Given a binary tree as the usual Prolog term t(X,L,R) (or nil). As
-  a preparation for drawing the tree, a layout algorithm is required
-  to determine the position of each node in a rectangular grid.  In
-  this layout strategy, the position of a node v is obtained by the
+  "P64 (**) Layout a binary tree.
+  Given a binary tree as the usual Prolog term t(X,L,R) (or nil). As a
+  preparation for drawing the tree, a layout algorithm is required to
+  determine the position of each node in a rectangular grid.  In this
+  layout strategy, the position of a node v is obtained by the
   following two rules: x(v) is equal to the position of the node v in
   the inorder y(v) is equal to the depth of the node v in the tree
   sequence "
   [t]
-  )
+  (inorder-tree-edit
+   (first-in-order (tree-zip t))
+   (fn [[v & children :as node] {:keys [x depth] :or {x 1} :as state}]
+     (if node
+       [(apply vector {:v v :x x :y depth } children) (assoc state :x (inc x))]
+       [node state]))))
 
 
-
-(def t '[f [b [a nil nil] [d [c nil nil] [e nil nil]]] [g nil [i [h nil nil] nil]]])
-(def zp (z/zipper (complement nil?) rest (fn [n c] (apply vector n c)) t))
-
-
-
-(defmacro spy [f]
-  `(let [res# ~f] 
-     (println res#)
-     res#))
-
-(defn next-in-order [loc]
-  (if (= :end (loc 1))
-    loc
-    (or
-     (and (z/branch? loc) (z/right (z/down loc)) (loop [p (z/right (z/down loc))]
-                                                   (if (z/down p)
-                                                     (recur (z/down p))
-                                                     p)))
-     (and (not (z/right loc)) (if (z/up loc)
-                                (loop [p loc]
-                                  (if (z/up p)
-                                    (or (z/up (z/right (z/up p))) (recur (z/up p)))
-                                    [(z/node loc) :end]))
-                                (-> loc z/down z/rightmost)
-                                ))
-     (and (not (z/left loc)) (z/up loc)))
-    ))
-
-
-(def zp-ready (-> zp z/down z/down))
-(-> zp-ready z/node) 
-
-(defn walk [zipper f]
-  (loop [loc zipper]
-    (if (z/end? loc)
-      (z/root loc)
-      (let [_ (println (z/node loc))]
-        (recur (f loc))))))
-
-(walk zp-ready next-in-order)
-
-(def vzip (z/vector-zip t))
-(-> vzip z/down z/right)
-(-> vzip z/down z/right (z/edit (fn [n] (apply vector 'd (rest (spy n))))) z/root)
-(-> vzip z/next z/next z/next )
-(-> zp z/down)
+(comment 
+  (def t '[f [b [a nil nil] [d [c nil nil] [e nil nil]]] [g nil [i [h nil nil] nil]]])
+  (layout1 t))
