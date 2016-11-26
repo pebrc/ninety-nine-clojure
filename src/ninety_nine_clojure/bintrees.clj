@@ -287,8 +287,8 @@
     (or
      (and (z/branch? loc) (z/right (z/down loc)) (first-in-order (z/right (z/down loc))))
      (and (not (z/right loc)) (loop [p loc]
-                                (if (z/up p)
-                                  (or (z/up (z/right (z/up p))) (recur (z/up p)))
+                                (if-let [one-up (z/up p)]
+                                  (or (-> one-up z/right z/up) (recur one-up))
                                   [(z/node loc) :ioe])))
      (and (not (z/left loc)) (z/up loc)))))
 
@@ -305,7 +305,7 @@
           [new-node new-state :as res] (f node (assoc state :depth depth))
           new-loc (if (= new-node node)
                     loc
-                    (spy (z/replace loc new-node)))
+                    (z/replace loc new-node))
           next-loc (next new-loc)]
       (if (end-in-order? next-loc)
         (z/root new-loc)
@@ -334,4 +334,5 @@
 
 (comment 
   (def t '[f [b [a nil nil] [d [c nil nil] [e nil nil]]] [g nil [i [h nil nil] nil]]])
-  (layout1 t))
+  (def t2 '[a [b nil [c nil nil]] [d nil nil]])
+  (layout1 t2))
