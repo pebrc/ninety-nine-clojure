@@ -332,7 +332,38 @@
        [node state]))))
 
 
+
+(defn layout2
+  [t]
+  (let [h (height t)
+        x-offset-at (fn [d] (/ (m/expt 2 (- (inc h) d)) 2))
+        x-offset (fn [d prev-d] (if (nil? prev-d) 0 (x-offset-at (max d prev-d))))] 
+    (inorder-tree-edit
+     (first-in-order (tree-zip t))
+     (fn [[v & children :as node] {:keys [x depth prev-depth] :or {x 1} :as state}]
+       (if node
+         (let [new-x (+ x (x-offset depth prev-depth ))]
+           [(apply vector {:v v :x new-x  :y depth } children) (assoc state :x new-x :prev-depth depth) ])
+         [node state])))))
+
+
 (comment 
   (def t '[f [b [a nil nil] [d [c nil nil] [e nil nil]]] [g nil [i [h nil nil] nil]]])
   (def t2 '[a [b nil [c nil nil]] [d nil nil]])
-  (layout1 t2))
+  (def t3 '[n [k [c [a nil nil] [e [d nil nil] [g nil nil]]] [m nil nil]] [u [p nil [q nil nil]] nil]])
+  (layout2 t3)
+
+
+  
+  (->> (tree-zip t3)
+       (iterate z/next)
+       (take-while #(not (z/end? %))) ;; Zipper's "end of iteration" condition. 
+       (map z/node))
+
+  (->> (first-in-order (tree-zip t3))
+       (iterate next-in-order)
+       (take-while #(not (end-in-order? %))) ;; Zipper's "end of iteration" condition. 
+       (map #(first (z/node %))))
+)
+
+
