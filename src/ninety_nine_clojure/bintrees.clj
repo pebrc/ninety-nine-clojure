@@ -350,18 +350,54 @@
          [node state])))))
 
 
+(defn right [[_ _ r]] r)
+(defn left [[_ l _]] l)
+
+(defn n-bounds [t dir]
+  (loop [cnt 0 n (dir t)]
+    (if (nil? n)
+      cnt
+      (recur (inc cnt) (dir n)))))
+
+(defn depth-diff [d prev-d]
+  (m/abs (- prev-d d)))
+
+(defn x-compact [x node depth prev-depth prev-offset]
+  (match [node depth]
+         [_ (_ :guard #(< 0 (- % prev-depth) ))] (inc x) ; level down
+         [(true :<< leaf?) _ ] x
+         [_ (_ :guard #(< 2 (depth-diff % prev-depth)))] (+ x (- 2 (depth-diff depth prev-depth))) ;multi level up
+         
+         [[_ l r] _] (+ x (n-bounds l right) (n-bounds r left) (- prev-offset (depth-diff depth prev-depth))))) ;max subtree bounds
+
+(defn layout3
+  [t]
+  (inorder-tree-edit
+   (first-in-order (tree-zip t))
+   (fn [[v l r :as node] {:keys [x depth prev-depth prev-offset] :or {x 0 prev-offset 0 prev-depth 0} :as state} ]
+     (if node
+       (let [new-x (x-compact x node depth prev-depth prev-offset)]
+         [(conj [] {:v v :x new-x :y depth} l r) (assoc state :x new-x :prev-depth depth :prev-offset (- new-x x) ) ])
+       [node state]))))
+
+
 (comment 
   (def t '[f [b [a nil nil] [d [c nil nil] [e nil nil]]] [g nil [i [h nil nil] nil]]])
   (def t2 '[a [b nil [c nil nil]] [d nil nil]])
   (def t3 '[n [k [c [a nil nil] [e [d nil nil] [g nil nil]]] [m nil nil]] [u [p nil [q nil nil]] nil]])
-  (layout2 t3)
+  (->> (layout3 t3)
+       depth-first
+       (map (fn [[n _ _]] (select-keys n [:x :y])))
+       set
+       count)
+       
 
 
   
   (->> (tree-zip t3)
        (iterate z/next)
        (take-while #(not (z/end? %))) ;; Zipper's "end of iteration" condition. 
-       (map z/node))
+       (map #(first (z/node %))))
 
   (->> (first-in-order (tree-zip t3))
        (iterate next-in-order)
