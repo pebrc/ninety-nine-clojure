@@ -12,5 +12,6 @@
                  [org.clojure/core.typed "0.2.84"]
                  [org.clojure/core.logic "0.8.10"]
                  [com.stuartsierra/frequencies "0.1.0"]
+                 [quil "2.5.0"]
                  [criterium "0.4.3"]
                  [cheshire "5.3.1"]] )

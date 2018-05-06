@@ -297,7 +297,7 @@
   [loc]
   (= :ioe (loc 1)))
 
-(defn tree-edit [zipper f next]
+(defn tree-edit [zipper f next end?]
   (loop [loc zipper state {}]  
     (let [node (z/node loc)
           path (z/path loc)
@@ -307,12 +307,15 @@
                     loc
                     (z/replace loc new-node))
           next-loc (next new-loc)]
-      (if (end-in-order? next-loc)
+      (if (end? next-loc)
         (z/root new-loc)
         (recur next-loc new-state)))))
 
 (defn inorder-tree-edit [zipper f]
-  (tree-edit zipper f next-in-order))
+  (tree-edit zipper f next-in-order end-in-order?))
+
+(defn depth-first-tree-edit [zipper f]
+  (tree-edit zipper f z/next z/end?))
 
 (defn layout1
   "P64 (**) Layout a binary tree.
