@@ -125,7 +125,7 @@
   (is (not (no-overlap? [{:x 1 :y 1 :v 'x} [{:x 1 :y 1 :v 'x} nil nil] nil]))))
 
 
-(defspec p66-reference-example
+(deftest p66-reference-example
   (is (=
        (layout3 '[n [k [c [a nil nil] [e [d nil nil] [g nil nil]]] [m nil nil]] [u [p nil [q nil nil]] nil]])
        '[{:v n, :x 5, :y 1} [{:v k, :x 3, :y 2} [{:v c, :x 2, :y 3} [{:v a, :x 1, :y 4} nil nil] [{:v e, :x 3, :y 4} [{:v d, :x 2, :y 5} nil nil] [{:v g, :x 4, :y 5} nil nil]]] [{:v m, :x 4, :y 3} nil nil]] [{:v u, :x 7, :y 2} [{:v p, :x 6, :y 3} nil [{:v q, :x 7, :y 4} nil nil]] nil]])))

@@ -359,25 +359,41 @@
       cnt
       (recur (inc cnt) (dir n)))))
 
+(defn bounds [l r]
+  (let [bounds  [(n-bounds r left) (n-bounds l right)]
+        ;_ (println "bounds: " bounds )
+        ]      
+    (apply + bounds))
+  )
+
 (defn depth-diff [d prev-d]
   (m/abs (- prev-d d)))
 
-(defn x-compact [x node depth prev-depth prev-offset]
+(defn x-compact [x node depth prev-depth left-offset]
+;  (println x node depth prev-depth left-offset)
   (match [node depth]
-         [_ (_ :guard #(< 0 (- % prev-depth) ))] (inc x) ; level down
-         [(true :<< leaf?) _ ] x
-         [_ (_ :guard #(< 2 (depth-diff % prev-depth)))] (+ x (- 2 (depth-diff depth prev-depth))) ;multi level up
-         
-         [[_ l r] _] (+ x (n-bounds l right) (n-bounds r left) (- prev-offset (depth-diff depth prev-depth))))) ;max subtree bounds
+         [_ (_ :guard #(= 1 (- % prev-depth) ))] (inc x) ; level down
+         [(true :<< leaf?) _ ] x 
+         [_ (_ :guard #(< 2 (- prev-depth %)))] (+ x (- 2 (depth-diff depth prev-depth))) ;multi level up
+         [[_ l r] (_ :guard #(= 1 (- prev-depth %)))] (+ x (max 1 (+ (n-bounds l right) (n-bounds r left)))) ;; level up
+         [[_ l r] (_ :guard #(> 0 (- prev-depth %)))] (+ x (bounds l r) (- left-offset (dec (depth-diff prev-depth depth)))) ;down max subtree bounds
+         [[_ l r] _] (+ x (bounds l r) (- left-offset (depth-diff prev-depth depth))))) ;default: max subtree bounds
+
+
+(defn offset-to-left [x [v l r]]
+  ;(println "left-offset: " x v l r)
+  (if v
+    (- x (:x v))
+    1))
 
 (defn layout3
   [t]
   (inorder-tree-edit
    (first-in-order (tree-zip t))
-   (fn [[v l r :as node] {:keys [x depth prev-depth prev-offset] :or {x 0 prev-offset 0 prev-depth 0} :as state} ]
+   (fn [[v l r :as node] {:keys [x depth prev-depth left-offset] :or {x 1 left-offset 1 prev-depth 0} :as state} ]
      (if node
-       (let [new-x (x-compact x node depth prev-depth prev-offset)]
-         [(conj [] {:v v :x new-x :y depth} l r) (assoc state :x new-x :prev-depth depth :prev-offset (- new-x x) ) ])
+       (let [new-x (x-compact x node depth prev-depth left-offset)]
+         [(conj [] {:v v :x new-x :y depth} l r) (assoc state :x new-x :prev-depth depth :left-offset (offset-to-left new-x l) ) ])
        [node state]))))
 
 
@@ -385,7 +401,12 @@
   (def t '[f [b [a nil nil] [d [c nil nil] [e nil nil]]] [g nil [i [h nil nil] nil]]])
   (def t2 '[a [b nil [c nil nil]] [d nil nil]])
   (def t3 '[n [k [c [a nil nil] [e [d nil nil] [g nil nil]]] [m nil nil]] [u [p nil [q nil nil]] nil]])
-  (->> (layout3 t3)
+  (def t4 '[{:v a, :x 2, :y 1}
+   [{:v b, :x 1, :y 2}
+    [{:v c, :x 0, :y 3} nil [{:v d, :x 1, :y 4} nil nil]]
+    [{:v e, :x 2, :y 3} nil [{:v f, :x 3, :y 4} nil nil]]]
+   [{:v g, :x 3, :y 2} [{:v h, :x 2, :y 3} nil nil] nil]])
+  (->> (layout3 t4)
        depth-first
        (map (fn [[n _ _]] (select-keys n [:x :y])))
        set
