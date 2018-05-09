@@ -68,11 +68,11 @@
   (let [;_     (q/exit)
         size 30
                                         ;tree (b/layout3 '[n [k [c [a nil nil] [e [d nil nil] [g nil nil]]] [m nil nil]] [u [p nil [q nil nil]] nil]])
-        tree '[{:v a, :x 2, :y 1}
-   [{:v b, :x 1, :y 2}
-    [{:v c, :x 0, :y 3} nil [{:v d, :x 1, :y 4} nil nil]]
-    [{:v e, :x 2, :y 3} nil [{:v f, :x 3, :y 4} nil nil]]]
-   [{:v g, :x 3, :y 2} [{:v h, :x 2, :y 3} nil nil] nil]]
+        tree (b/layout3 '[a
+            [b
+             [c  nil [d nil nil]]
+             [e nil [f nil nil]]]
+            [g, [h nil nil] nil]])
         ]
     (q/background 255)
     (draw-grid size)
