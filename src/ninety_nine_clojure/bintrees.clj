@@ -383,7 +383,7 @@
     (- x (:x v))
     1))
 
-(defn layout3
+(defn layout3-zipped
   [t]
   (inorder-tree-edit
    (first-in-order (tree-zip t))
@@ -394,8 +394,43 @@
        [node state]))))
 
 
-(defn bounds []
-  )
+(defn shift [lrb rlb]
+  (condp >= (+ lrb rlb)
+    0 0
+    1 1
+    (/ (+ lrb rlb 2) 2)))
+
+(declare lbounds)
+(declare rbounds)
+
+(defn bounds [t]
+  (match t
+         nil nil
+         [_ l r] (let [[llb lrb _] (lbounds  (bounds l))
+                       [rlb rrb _] (rbounds  (bounds r))
+                       dx (shift  lrb rlb)]
+                   [(+ llb dx) (+ rrb dx) (max 1 (* 2 dx))])))
+
+(defn lbounds [[lb rb]]
+  (if (and (nil? lb) (nil? rb))
+    [0 0]
+    [(inc lb) (max 0 (dec rb))]))
+
+(defn rbounds [[lb rb]]
+  (if (and (nil? lb) (nil? rb))
+    [0 0]
+    [(max 0 (dec lb)) (inc rb)]))
+
+
+(defn layout3 [t]
+  (let [[lb rb dx] (bounds t)
+        l-fn (fn l-fn [x d t dx]
+               (match t
+                      nil nil
+                      [v l r] (let [[_ _ ldx] (bounds l)
+                                    [_ _ rdx] (bounds r)]
+                                [{:v v :x x :y d} (l-fn (- x dx) (inc d) l ldx) (l-fn  (+ x dx) (inc d) r rdx)])))]
+    (l-fn lb 1 t dx)))
 
 (comment 
   (def t '[f [b [a nil nil] [d [c nil nil] [e nil nil]]] [g nil [i [h nil nil] nil]]])
@@ -406,7 +441,11 @@
              [c  nil [d nil nil]]
              [e nil [f nil nil]]]
             [g, [h nil nil] nil]])
-  (depth-first t3)
+  (bounds (nth (second  t3) 1))
+  (let [t '[a [b nil nil]  [c nil nil]]]
+    [(layout3 t) (bounds t)])
+  (layout3 t3)
+  (shift 2 1)
   (->> (layout3 t4)
        depth-first
        (map (fn [[n _ _]] (select-keys n [:x :y])))

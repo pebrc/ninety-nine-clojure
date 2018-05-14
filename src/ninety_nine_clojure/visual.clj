@@ -67,12 +67,12 @@
 (defn draw []
   (let [;_     (q/exit)
         size 30
-                                        ;tree (b/layout3 '[n [k [c [a nil nil] [e [d nil nil] [g nil nil]]] [m nil nil]] [u [p nil [q nil nil]] nil]])
-        tree (b/layout3 '[a
-            [b
-             [c  nil [d nil nil]]
-             [e nil [f nil nil]]]
-            [g, [h nil nil] nil]])
+        tree (b/layout3 '[n [k [c [a nil nil] [e [d nil nil] [g nil nil]]] [m nil nil]] [u [p nil [q nil nil]] nil]])
+        ;; tree (b/layout3 '[a
+        ;;              [b
+        ;;               [c  nil [d nil nil]]
+        ;;               [e nil [f nil nil]]]
+        ;;              [g, [h nil nil] nil]])
         ]
     (q/background 255)
     (draw-grid size)
