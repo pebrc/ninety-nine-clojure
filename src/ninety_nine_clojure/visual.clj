@@ -65,7 +65,7 @@
 
 
 (defn draw []
-  (let [;_     (q/exit)
+  (let [_     (q/exit)
         size 30
         tree (b/layout3 '[n [k [c [a nil nil] [e [d nil nil] [g nil nil]]] [m nil nil]] [u [p nil [q nil nil]] nil]])
         ;; tree (b/layout3 '[a

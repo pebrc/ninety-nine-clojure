@@ -334,8 +334,6 @@
        [(apply vector {:v v :x x :y depth } children) (assoc state :x (inc x))]
        [node state]))))
 
-
-
 (defn layout2
   [t]
   (let [h (height t)
@@ -349,88 +347,42 @@
            [(apply vector {:v v :x new-x  :y depth } children) (assoc state :x new-x :prev-depth depth) ])
          [node state])))))
 
+(defn zip-all [& seqs]
+  (let [e (map first seqs)]
+    (if (some some? e)
+      (lazy-seq  (cons e (apply zip-all (map rest seqs))))
+      nil)))
 
-(defn right [[_ _ r]] r)
-(defn left [[_ l _]] l)
+(defn overlay [xs]
+  (let [pairs (filter (complement nil?) xs)]
+       (case (count pairs)
+         1  (first pairs)
+         2  (let [[[ll lr] [rl rr]] pairs]
+              [ll rr]))))
 
-(defn n-bounds [t dir]
-  (loop [cnt 0 n (dir t)]
-    (if (nil? n)
-      cnt
-      (recur (inc cnt) (dir n)))))
-
-(defn sum-bounds [l r]
-  (let [bounds  [(n-bounds r left) (n-bounds l right)]] 
-    (apply + bounds)))
-
-(defn depth-diff [d prev-d]
-  (m/abs (- prev-d d)))
-
-(defn x-compact [x node depth prev-depth left-offset]
-;  (println x node depth prev-depth left-offset)
-  (match [node depth]
-         [_ (_ :guard #(= 1 (- % prev-depth) ))] (inc x) ; level down
-         [(true :<< leaf?) _ ] x 
-         [[_ l r] (_ :guard #(< 2 (- prev-depth %)))] (+ x (- (sum-bounds l r) 2) (- 2  (depth-diff depth prev-depth))) ;multi level up
-         [[_ l r] (_ :guard #(= 1 (- prev-depth %)))] (+ x (max 1 (+ (n-bounds l right) (n-bounds r left)))) ;; level up
-         [[_ l r] (_ :guard #(> 0 (- prev-depth %)))] (+ x (sum-bounds l r) (- left-offset (dec (depth-diff prev-depth depth)))) ;down max subtree bounds
-         [[_ l r] _] (+ x (sum-bounds l r) (- left-offset (depth-diff prev-depth depth))))) ;default: max subtree bounds
-
-
-(defn offset-to-left [x [v l r]]
-  ;(println "left-offset: " x v l r)
-  (if v
-    (- x (:x v))
-    1))
-
-(defn layout3-zipped
-  [t]
-  (inorder-tree-edit
-   (first-in-order (tree-zip t))
-   (fn [[v l r :as node] {:keys [x depth prev-depth left-offset] :or {x 1 left-offset 1 prev-depth 0} :as state} ]
-     (if node
-       (let [new-x (x-compact x node depth prev-depth left-offset)]
-         [(conj [] {:v v :x new-x :y depth} l r) (assoc state :x new-x :prev-depth depth :left-offset (offset-to-left new-x l) ) ])
-       [node state]))))
-
-
-(defn shift [lrb rlb]
-  (condp >= (+ lrb rlb)
-    0 0
-    1 1
-    (/ (+ lrb rlb 2) 2)))
-
-(declare lbounds)
-(declare rbounds)
+(defn mapp [fn coll]
+  (map #(mapv fn %) coll))
 
 (defn bounds [t]
-  (match t
-         nil nil
-         [_ l r] (let [[llb lrb _] (lbounds  (bounds l))
-                       [rlb rrb _] (rbounds  (bounds r))
-                       dx (shift  lrb rlb)]
-                   [(+ llb dx) (+ rrb dx) (max 1 (* 2 dx))])))
-
-(defn lbounds [[lb rb]]
-  (if (and (nil? lb) (nil? rb))
-    [0 0]
-    [(inc lb) (max 0 (dec rb))]))
-
-(defn rbounds [[lb rb]]
-  (if (and (nil? lb) (nil? rb))
-    [0 0]
-    [(max 0 (dec lb)) (inc rb)]))
-
+  (if (not t) []
+      (-> (match t                
+                 [_ nil nil] []
+                 [_ l r] (let [lb (bounds l)
+                               rb (bounds r)
+                               sep (->> (mapv vector lb rb)
+                                        (mapv (fn [[[ll lr] [rl rr]]] (inc (/ (- lr rl) 2))))
+                                        (reduce max 1))]
+                           (map overlay (zip-all (mapp #(- % sep) lb) (mapp (partial + sep)  rb)))))
+          (conj [0 0]))))
 
 (defn layout3 [t]
-  (let [[lb rb dx] (bounds t)
-        l-fn (fn l-fn [x d t dx]
-               (match t
-                      nil nil
-                      [v l r] (let [[_ _ ldx] (bounds l)
-                                    [_ _ rdx] (bounds r)]
-                                [{:v v :x x :y d} (l-fn (- x dx) (inc d) l ldx) (l-fn  (+ x dx) (inc d) r rdx)])))]
-    (l-fn lb 1 t dx)))
+  (let [x (inc (* -1 (reduce min (map (fn [[l r]] l) (bounds t))))) 
+        aux (fn aux [x y [v l r :as t']]
+              (match (into [] (bounds t')) 
+                     [_ [bl br] & _] [{:v v :x x :y y} (aux (+ x bl) (inc y) l) (aux (+ x br) (inc y) r)]
+                     [] nil
+                     _ [{:v v :x x :y y} nil nil]))]
+    (aux x 1 t)))
 
 (comment 
   (def t '[f [b [a nil nil] [d [c nil nil] [e nil nil]]] [g nil [i [h nil nil] nil]]])
@@ -441,20 +393,11 @@
              [c  nil [d nil nil]]
              [e nil [f nil nil]]]
             [g, [h nil nil] nil]])
-  (bounds (nth (second  t3) 1))
-  (let [t '[a [b nil nil]  [c nil nil]]]
-    [(layout3 t) (bounds t)])
-  (layout3 t3)
-  (shift 2 1)
-  (->> (layout3 t4)
-       depth-first
-       (map (fn [[n _ _]] (select-keys n [:x :y])))
-       set
-       count)
-       
-
-
   
+  (let [t '[a [b nil nil]  [c nil nil]]]
+    (layout3 t))
+  (layout3 t3)
+
   (->> (tree-zip t3)
        (iterate z/next)
        (take-while #(not (z/end? %))) ;; Zipper's "end of iteration" condition. 
